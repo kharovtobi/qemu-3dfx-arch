@@ -9,7 +9,7 @@ For more info. Refer to the original repo
     wrappers/3dfx       - Glide wrappers for supported guest OS/environment (DOS/Windows/DJGPP/Linux)
     wrappers/mesa       - MESA GL wrapper for supported guest OS/environment (Windows)
     bin/PKGBUILD        - Script for building the packages
-    bin/disks/fd.ima    -Windows 9x Floppy disk with some tools included
+    bin/disks/fd.ima    - Windows 9x Floppy disk with some tools included
 ## Patch
     00-qemu82x-mesa-glide.patch - Patch for QEMU version 8.2.x (MESA & Glide)
     01-qemu72x-mesa-glide.patch - Patch for QEMU version 7.2.x (MESA & Glide)
