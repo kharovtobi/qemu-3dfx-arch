@@ -20,7 +20,8 @@ Witness, experience and share your thoughts on modern CPU/GPU prowess for retro 
 - Wiki (https://github.com/kjliew/qemu-3dfx/wiki)
 ## Building QEMU
 There are two ways to build this repo. While this is repo is used for Arch Linux, It can also build on other OS like Windows 10. With MSYS2. It may not be supported, yet.
-**Convenience Way**
+
+**Convenience Way:**
 This way is simple. Just download the PKGBUILD from github
 
     $ mkdir ~/myqemu && cd ~/myqemu
@@ -29,7 +30,8 @@ This way is simple. Just download the PKGBUILD from github
     $ makepkg -si
 
 This scripts builds it for you to install into your system
-**Traditional Way**
+
+**Traditional Way:**
 This way is basically the same, But less tedious and compiles only the essentials, making it much faster.
 Simple guide to apply the patch:<br>
 (using `00-qemu82x-mesa-glide.patch`)
@@ -47,7 +49,7 @@ Simple guide to apply the patch:<br>
     $ ../qemu-8.2.1/configure  --target-list="i386-softmmu"
     $ make
 
-**Note**
+**Note:**
 - All patch hunks must be successful in order for the binary to run properly. If you got problems, send a issue.
 
 ## Building Guest Wrappers
@@ -57,7 +59,8 @@ Simple guide to apply the patch:<br>
  - `mingw32` cross toolchain (`binutils, gcc, windres, dlltool`) for WIN32 DLL wrappers
  - `Open-Watcom-1.9/v2.0` or `Watcom C/C++ 11.0` for DOS32 OVL wrapper
  - `{i586,i686}-pc-msdosdjgpp` cross toolchain (`binutils, gcc, dxe3gen`) for DJGPP DXE wrappers
-Refer to docs/Wrapper Dependencies.md for more details
+
+ Refer to docs/Wrapper Dependencies.md for more details
 <br>
 
     $ cd ~/myqemu/qemu-3dfx/wrappers/3dfx
