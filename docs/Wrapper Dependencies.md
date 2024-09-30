@@ -14,7 +14,8 @@ Works only for Arch based distros with AUR.
 1. openwatcom-v2 (AUR bin)
 
 dont forget to run command before compiling!
-source /opt/watcom/owsetenv.sh
+
+    $ source /opt/watcom/owsetenv.sh
 
 **Msdosdjgpp cross toolchain**
 1. djgpp-binutils (AUR Compile)

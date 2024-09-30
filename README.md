@@ -1,5 +1,6 @@
 # QEMU MESA GL/3Dfx Glide Pass-Through (for Arch based distros)
 This is a fork of QEMU-3dfx for PKGBUILD
+
 For more info. Refer to the original repo
 ## Content
     qemu-0/hw/3dfx      - Overlay for QEMU source tree to add 3Dfx Glide pass-through device model
@@ -8,6 +9,7 @@ For more info. Refer to the original repo
     wrappers/3dfx       - Glide wrappers for supported guest OS/environment (DOS/Windows/DJGPP/Linux)
     wrappers/mesa       - MESA GL wrapper for supported guest OS/environment (Windows)
     bin/PKGBUILD        - Script for building the packages
+    bin/disks/fd.ima        -Windows 9x Floppy disk with some tools included
 ## Patch
     00-qemu82x-mesa-glide.patch - Patch for QEMU version 8.2.x (MESA & Glide)
     01-qemu72x-mesa-glide.patch - Patch for QEMU version 7.2.x (MESA & Glide)
@@ -19,20 +21,21 @@ Witness, experience and share your thoughts on modern CPU/GPU prowess for retro 
 - VOGONS forums (https://www.vogons.org)
 - Wiki (https://github.com/kjliew/qemu-3dfx/wiki)
 ## Building QEMU
-There are two ways to build this repo. While this is repo is used for Arch Linux, It can also build on other OS like Windows 10. With MSYS2. It may not be supported, yet.
+There are two ways to build this repo. While this is repo is used for Arch Linux, It can also build on other OS like Windows 10 with MSYS2. It may not be supported, yet.
 
 **Convenience Way:**
-This way is simple. Just download the PKGBUILD from github
+This way is simple. Just download the PKGBUILD from Github.
 
     $ mkdir ~/myqemu && cd ~/myqemu
     $ git clone https://github.com/kharovtobi/qemu-3dfx.git
     $ cd qemu-3dfx/bin
     $ makepkg -si
 
-This scripts builds it for you to install into your system
+This scripts builds it for you to install into your system.
 
 **Traditional Way:**
 This way is basically the same, But less tedious and compiles only the essentials, making it much faster.
+
 Simple guide to apply the patch:<br>
 (using `00-qemu82x-mesa-glide.patch`)
 
