@@ -1,1 +1,127 @@
-#Placeholder file
+# Maintainer:kharovtobi <tugboat_khatov@outlook.com>
+# This repo is not my work! it belongs to kjliew at https://github.com/kjliew/qemu-3dfx (pls support him)
+# Do not post this into AUR! (it breaks some package rules anyway)
+# the PKGBUILD is dependent on Arch Linux! (and highly experimental)
+pkgname=qemu-3dfx
+pkgver=8.2.1
+pkgrel=1
+pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU"
+arch=("x86_64")
+url="https://github.com/kharovtobi/qemu-3dfx.git"
+license=('GPL-2.0')
+depends=("seabios"
+                    "qemu-common"
+                    "qemu-img"
+)
+makedepends=(
+                                "base"
+                                "base-devel"
+                                "rsync"
+                                "patch"
+                                "ninja"
+                                "git"
+                                "alsa-lib"
+                                "brltty"
+                                "bzip2"
+                                "cairo"
+                                "capstone"
+                                "curl"
+                                "dtc"
+                                "fuse3"
+                                "gcc-libs"
+                                "gdk-pixbuf2"
+                                "glib2"
+                                "glib2-devel"
+                                "glusterfs"
+                                "gnutls"
+                                "gtk3"
+                                "jack"
+                                "keyutils"
+                                "libaio"
+                                "libbpf"
+                                "libcacard"
+                                "libcap-ng"
+                                "libepoxy"
+                                "libiscsi"
+                                "libnfs"
+                                "libpipewire"
+                                "libpng"
+                                "libpulse"
+                                "libsasl"
+                                "libseccomp"
+                                "libslirp"
+                                "libssh"
+                                "liburing"
+                                "libusb"
+                                "libx11"
+                                "libxdp"
+                                "libxkbcommon"
+                                "libxml2"
+                                "lzo"
+                                "meson"
+                                "multipath-tools"
+                                "ncurses"
+                                "ndctl"
+                                "numactl"
+                                "pam"
+                                "pcre2"
+                                "python"
+                                "python-setuptools"
+                                "python-distlib"
+                                "python-sphinx"
+                                "python-sphinx_rtd_theme"
+                                "sdl2"
+                                "sdl2_image"
+                                "snappy"
+                                "spice"
+                                "spice-protocol"
+                                "systemd"
+                                "usbredir"
+                                "vde2"
+                                "virglrenderer"
+                                "vte3"
+                                "zlib"
+                                "zstd"
+# There are other less dependencies depending on what packages you installed.
+)
+optdepends=(
+					        'qemu-3dfx-wrappers: for wrappers in guest systems'
+)
+provides=("qemu-3dfx")
+conflicts=("qemu-3dfx")
+replaces=("qemu-3dfx")
+source=(
+                 "git+https://github.com/kharovtobi/qemu-3dfx.git"
+                "https://download.qemu.org/qemu-${pkgver}.tar.xz"
+
+)
+noextract=("qemu-8.2.1.tar.xz")
+sha256sums=(
+                            'SKIP'
+                            '8562751158175f9d187c5f22b57555abe3c870f0325c8ced12c34c6d987729be'
+)
+
+prepare() {
+    tar xvf qemu-8.2.1.tar.xz --directory "$pkgname"
+    cd "$pkgname"/qemu-8.2.1
+    rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
+    patch -p0  --verbose --dry-run -i  ../00-qemu82x-mesa-glide.patch
+    bash ../scripts/sign_commit
+    cd "$srcdir"/"$pkgname"/build
+}
+
+build() {
+    cd "$srcdir"/"$pkgname"/build
+    ../qemu-8.2.1/configure --target-list="i386-softmmu" \
+                                                        --prefix=/usr/qemu-3dfx
+    make clean
+    make
+}
+
+package() {
+	cd "$srcdir"/"$pkgname"/build
+	make DESTDIR="$pkgdir/" install
+	install -Dm644 "$srcdir"/"$pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
+	mkdir -p "$pkgdir"/usr/bin
+	ln -s "$srcdir"/usr/qemu-3dfx/bin/qemu-system-i386 "$pkgdir"/usr/bin/qemu-3dfx-system-i386
+}
