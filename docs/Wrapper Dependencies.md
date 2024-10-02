@@ -38,4 +38,4 @@ djgpp-gcc (AUR Compile)
 2. Install djgpp-djcrx
 3. Run command
 
-        $ sudo ln-sf usr/bin/i686-pc-msdosdjgpp-dxe3gen /usr/bin/dxe3gen
+        $ sudo ln -sf usr/bin/i686-pc-msdosdjgpp-dxe3gen /usr/bin/dxe3gen
