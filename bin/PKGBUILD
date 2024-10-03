@@ -10,8 +10,8 @@ arch=("x86_64")
 url="https://github.com/kharovtobi/qemu-3dfx.git"
 license=('GPL-2.0')
 depends=("seabios"
-                    "qemu-common"
-                    "qemu-img"
+                     "qemu-common"
+                     "qemu-img"
 )
 makedepends=(
                                 "base"
@@ -78,7 +78,7 @@ makedepends=(
                                 "systemd"
                                 "usbredir"
                                 "vde2"
-                                "virglrenderer"
+                                "virglrenderer" # Cause of Pass-though failure?
                                 "vte3"
                                 "zlib"
                                 "zstd"
@@ -95,25 +95,26 @@ source=(
                 "https://download.qemu.org/qemu-${pkgver}.tar.xz"
 
 )
-noextract=("qemu-8.2.1.tar.xz")
+noextract=("qemu-${pkgver}.tar.xz")
 sha256sums=(
                             'SKIP'
                             '8562751158175f9d187c5f22b57555abe3c870f0325c8ced12c34c6d987729be'
 )
 
 prepare() {
-    tar xvf qemu-8.2.1.tar.xz --directory "$pkgname"
-    cd "$pkgname"/qemu-8.2.1
+    tar xvf qemu-${pkgver}.tar.xz --directory "$pkgname"
+    cd "$pkgname"/qemu-${pkgver}
     rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
-    patch -p0  --verbose --dry-run -i  ../00-qemu82x-mesa-glide.patch
+    patch -p0 --verbose -i  ../00-qemu82x-mesa-glide.patch
     bash ../scripts/sign_commit
     cd "$srcdir"/"$pkgname"/build
 }
 
 build() {
     cd "$srcdir"/"$pkgname"/build
-    ../qemu-8.2.1/configure --target-list="i386-softmmu" \
+    ../qemu-${pkgver}/configure --target-list="i386-softmmu" \
                                                         --prefix=/usr/qemu-3dfx
+
     make clean
     make
 }
@@ -123,5 +124,4 @@ package() {
 	make DESTDIR="$pkgdir/" install
 	install -Dm644 "$srcdir"/"$pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
 	mkdir -p "$pkgdir"/usr/bin
-	ln -s "$srcdir"/usr/qemu-3dfx/bin/qemu-system-i386 "$pkgdir"/usr/bin/qemu-3dfx-system-i386
 }

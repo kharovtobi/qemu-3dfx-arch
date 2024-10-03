@@ -5,6 +5,8 @@ Works only for Arch based distros with AUR.
 
 base-devel (Core)
 
+perl (Core)
+
 xxd (Extra) (Either tinyxxd or vim)
 
 git (Extra)

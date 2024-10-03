@@ -24,12 +24,13 @@ Witness, experience and share your thoughts on modern CPU/GPU prowess for retro 
 There are two ways to build this repo. While this is repo is used for Arch Linux, It can also build on other OS like Windows 10 with MSYS2. It may not be supported, yet.
 
 **Convenience Way:**
-This way is simple. Just download the PKGBUILD from Github.
+This way is simple. Just download the PKGBUILD from GitHub.
 
     $ mkdir ~/myqemu && cd ~/myqemu
     $ git clone https://github.com/kharovtobi/qemu-3dfx.git
     $ cd qemu-3dfx/bin
     $ makepkg -si
+    $ sudo ln -sf /usr/qemu-3dfx/bin/qemu-system-i386 /usr/bin/qemu-3dfx-system-i386
 
 This scripts builds it for you to install into your system.
 
@@ -46,14 +47,14 @@ Simple guide to apply the patch:<br>
     $ tar xvf qemu-8.2.1.tar.xz
     $ cd qemu-8.2.1
     $ rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
-    $ patch -p0  --verbose --dry-run -i ../00-qemu82x-mesa-glide.patch
+    $ patch -p0 --verbose -i ../00-qemu82x-mesa-glide.patch
     $ bash ../scripts/sign_commit
     $ mkdir ../build && cd ../build
     $ ../qemu-8.2.1/configure  --target-list="i386-softmmu"
     $ make
 
 **Note:**
-- All patch hunks must be successful in order for the binary to run properly. If you got problems, send a issue.
+- All patch hunks must be successful in order for the binary to run properly.
 
 ## Building Guest Wrappers
 **Requirements:**
