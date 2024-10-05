@@ -30,9 +30,9 @@ This way is simple. Just download the PKGBUILD from GitHub.
     $ git clone https://github.com/kharovtobi/qemu-3dfx.git
     $ cd qemu-3dfx/bin
     $ makepkg -si
-    $ sudo ln -sf /usr/qemu-3dfx/bin/qemu-system-i386 /usr/bin/qemu-3dfx-system-i386
 
-This scripts builds it for you to install into your system.
+- This scripts builds it for you to install into your system.
+- Chroot is recommended! for more details, go to https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
 
 **Traditional Way:**
 This way is basically the same, But less tedious and compiles only the essentials, making it much faster.

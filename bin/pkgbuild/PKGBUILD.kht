@@ -1,13 +1,14 @@
 # Maintainer:kharovtobi <tugboat_khatov@outlook.com>
 # This repo is not my work! it belongs to kjliew at https://github.com/kjliew/qemu-3dfx (pls support him)
 # Do not post this into AUR! (it breaks some package rules anyway)
-# the PKGBUILD is dependent on Arch Linux! (and highly experimental)
+# the PKGBUILD is dependent on My repository. Results may be varied
+
 pkgname=qemu-3dfx
 pkgver=8.2.1
 pkgrel=1
 pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU"
 arch=("x86_64")
-url="https://github.com/kjliew/qemu-3dfx.git"
+url="https://github.com/kharovtobi/qemu-3dfx.git"
 license=('GPL-2.0')
 depends=("seabios"
                      "qemu-common"
@@ -31,7 +32,6 @@ makedepends=(
                                 "gcc-libs"
                                 "gdk-pixbuf2"
                                 "glib2"
-                                "glibc"
                                 "glib2-devel"
                                 "glusterfs"
                                 "gnutls"
@@ -69,7 +69,6 @@ makedepends=(
                                 "python"
                                 "python-setuptools"
                                 "python-distlib"
-                                "pixman"
                                 "python-sphinx"
                                 "python-sphinx_rtd_theme"
                                 "sdl2"
@@ -93,7 +92,7 @@ provides=("qemu-3dfx")
 conflicts=("qemu-3dfx")
 replaces=("qemu-3dfx")
 source=(
-                 "git+https://github.com/kjliew/qemu-3dfx.git"
+                 "git+https://github.com/kharovtobi/qemu-3dfx.git"
                 "https://download.qemu.org/qemu-${pkgver}.tar.xz"
 
 )
@@ -104,26 +103,19 @@ sha256sums=(
 )
 
 prepare() {
-    tar xf qemu-${pkgver}.tar.xz --directory "$pkgname"
+    tar xvf qemu-${pkgver}.tar.xz --directory "$pkgname"
     cd "$pkgname"/qemu-${pkgver}
-    rsync -r ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
-    patch -p0 -i  ../00-qemu82x-mesa-glide.patch
+    rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
+    patch -p0 --verbose -i  ../00-qemu82x-mesa-glide.patch
     bash ../scripts/sign_commit
-    rm -rf "$srcdir"/"$pkgname"/build
-    mkdir -p "$srcdir"/"$pkgname"/build
     cd "$srcdir"/"$pkgname"/build
-    ../qemu-${pkgver}/configure --target-list="i386-softmmu" \
-                                                                  --prefix=/usr \
-                                                                  --enable-opengl \
-                                                                  --enable-gtk \
-                                                                  --enable-sdl \
-                                                                  --enable-sdl-image \
-                                                                  --enable-libusb
-
 }
 
 build() {
     cd "$srcdir"/"$pkgname"/build
+    ../qemu-${pkgver}/configure --target-list="i386-softmmu" \
+                                                        --prefix=/usr/qemu-3dfx
+
     make clean
     make
 }
@@ -132,5 +124,5 @@ package() {
 	cd "$srcdir"/"$pkgname"/build
 	make DESTDIR="$pkgdir/" install
 	install -Dm644 "$srcdir"/"$pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
-	install -Dm755 "$srcdir"/"$pkgname"/build/qemu-system-i386 "$pkgdir"/usr/bin/qemu-3dfx-system-i386
+	mkdir -p "$pkgdir"/usr/bin
 }
