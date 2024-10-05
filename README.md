@@ -27,7 +27,7 @@ There are two ways to build this repo. While this is repo is used for Arch Linux
 This way is simple. Just download the PKGBUILD from GitHub.
 
     $ mkdir ~/myqemu && cd ~/myqemu
-    $ git clone https://github.com/kharovtobi/qemu-3dfx.git
+    $ git clone https://github.com/kharovtobi/qemu-3dfx-arch.git
     $ cd qemu-3dfx/bin
     $ makepkg -si
 
@@ -89,5 +89,3 @@ Simple guide to apply the patch:<br>
  - Copy `GLIDE.DLL`, `GLIDE2X.DLL` and `GLIDE3X.DLL` to `%SystemRoot%\system32`  
  - Run `INSTDRV.EXE`, require Administrator Priviledge  
  - Copy `OPENGL32.DLL` to `Game Installation` folders
-
-##
