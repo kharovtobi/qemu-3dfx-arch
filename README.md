@@ -1,5 +1,5 @@
 # QEMU MESA GL/3Dfx Glide Pass-Through (for Arch based distros)
-This is a fork of QEMU-3dfx for PKGBUILD
+This is a fork of QEMU-3dfx for Arch Linux or any OS with pacman command
 
 For more info. Refer to the original repo
 ## Content
