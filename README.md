@@ -32,7 +32,7 @@ This way is simple. Just download the PKGBUILD from GitHub.
     $ makepkg -si
 
 - This scripts builds it for you to install into your system.
-- Chroot is recommended! for more details, go to https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
+- Chroot is recommended! for more details, Go to https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
 
 **Traditional Way:**
 This way is basically the same, But less tedious and compiles only the essentials, making it much faster.

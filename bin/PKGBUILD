@@ -70,8 +70,6 @@ makedepends=(
                                 "python-setuptools"
                                 "python-distlib"
                                 "pixman"
-                                "python-sphinx"
-                                "python-sphinx_rtd_theme"
                                 "sdl2"
                                 "sdl2_image"
                                 "snappy"
@@ -80,7 +78,7 @@ makedepends=(
                                 "systemd"
                                 "usbredir"
                                 "vde2"
-                                "virglrenderer" # Cause of Pass-though failure?
+                                "virglrenderer"
                                 "vte3"
                                 "zlib"
                                 "zstd"
@@ -125,12 +123,11 @@ prepare() {
 build() {
     cd "$srcdir"/"$pkgname"/build
     make clean
-    make
+    make qemu-system-i386
 }
 
 package() {
 	cd "$srcdir"/"$pkgname"/build
-	make DESTDIR="$pkgdir/" install
 	install -Dm644 "$srcdir"/"$pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
 	install -Dm755 "$srcdir"/"$pkgname"/build/qemu-system-i386 "$pkgdir"/usr/bin/qemu-3dfx-system-i386
 }
