@@ -44,10 +44,10 @@ Simple guide to apply the patch:<br>
     $ git clone https://github.com/kjliew/qemu-3dfx.git
     $ cd qemu-3dfx
     $ wget https://download.qemu.org/qemu-8.2.1.tar.xz
-    $ tar xvf qemu-8.2.1.tar.xz
+    $ tar xf qemu-8.2.1.tar.xz
     $ cd qemu-8.2.1
-    $ rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
-    $ patch -p0 --verbose -i ../00-qemu82x-mesa-glide.patch
+    $ rsync -r ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
+    $ patch -p0 -i ../00-qemu82x-mesa-glide.patch
     $ bash ../scripts/sign_commit
     $ mkdir ../build && cd ../build
     $ ../qemu-8.2.1/configure  --target-list="i386-softmmu"
