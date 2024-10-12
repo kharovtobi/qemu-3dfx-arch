@@ -32,7 +32,8 @@ Did you follow the Installation guide properly, forget compiling one of
 wrappers or compiling with diffrent hash?
 
 2. (Yellow) If you got corrupted dll error. especially OPENGL32.DLL
-It means a host problem.
+It means a guest or host problem.
+You use a dll compiled with different hash (best case)
 This binary is a failure and must be recompiled again. (worst case)
 
 ===========================================================================

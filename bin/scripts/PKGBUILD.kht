@@ -5,7 +5,7 @@
 
 pkgname=qemu-3dfx
 pkgver=8.2.1
-pkgrel=1
+pkgrel=2
 pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU"
 arch=("x86_64")
 url="https://github.com/kharovtobi/qemu-3dfx.git"
@@ -79,7 +79,7 @@ makedepends=(
                                 "systemd"
                                 "usbredir"
                                 "vde2"
-                                "virglrenderer" # Cause of Pass-though failure?
+                                "virglrenderer"
                                 "vte3"
                                 "zlib"
                                 "zstd"
@@ -106,7 +106,7 @@ prepare() {
     tar xvf qemu-${pkgver}.tar.xz --directory "$pkgname"
     cd "$pkgname"/qemu-${pkgver}
     rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
-    patch -p0 --verbose -i  ../00-qemu82x-mesa-glide.patch
+    patch -p0 --verbose -i  ../03-qemu82x-kharovtobi.patch
     bash ../scripts/sign_commit
     cd "$srcdir"/"$pkgname"/build
 }
@@ -114,7 +114,13 @@ prepare() {
 build() {
     cd "$srcdir"/"$pkgname"/build
     ../qemu-${pkgver}/configure --target-list="i386-softmmu" \
-                                                        --prefix=/usr/qemu-3dfx
+                                                                  --prefix=/usr/qemu-3dfx
+                                                                  --enable-opengl \
+                                                                  --enable-gtk \
+                                                                  --enable-gtk-clipboard \
+                                                                  --enable-sdl \
+                                                                  --enable-sdl-image \
+                                                                  --enable-libusb
 
     make clean
     make
@@ -124,5 +130,4 @@ package() {
 	cd "$srcdir"/"$pkgname"/build
 	make DESTDIR="$pkgdir/" install
 	install -Dm644 "$srcdir"/"$pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
-	mkdir -p "$pkgdir"/usr/bin
 }
