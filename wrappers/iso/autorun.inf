@@ -1,0 +1,4 @@
+[autorun]
+open= open.bat
+icon=qemu.ico
+

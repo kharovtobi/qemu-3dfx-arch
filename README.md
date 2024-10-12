@@ -27,7 +27,7 @@ There are two ways to build this repo. While this is repo is used for Arch Linux
 This way is simple. Just download the PKGBUILD from GitHub.
 
     $ mkdir ~/myqemu && cd ~/myqemu
-    $ git clone https://github.com/kharovtobi/qemu-3dfx-arch.git
+    $ git clone https://github.com/kharovtobi/qemu-3dfx.git
     $ cd qemu-3dfx/bin
     $ makepkg -si
 
@@ -50,7 +50,7 @@ Simple guide to apply the patch:<br>
     $ patch -p0 -i ../00-qemu82x-mesa-glide.patch
     $ bash ../scripts/sign_commit
     $ mkdir ../build && cd ../build
-    $ ../qemu-8.2.1/configure  --target-list="i386-softmmu"
+    $ ../qemu-8.2.1/configure --target-list="i386-softmmu"
     $ make
 
 **Note:**
@@ -64,7 +64,6 @@ Simple guide to apply the patch:<br>
  - `Open-Watcom-1.9/v2.0` or `Watcom C/C++ 11.0` for DOS32 OVL wrapper
  - `{i586,i686}-pc-msdosdjgpp` cross toolchain (`binutils, gcc, dxe3gen`) for DJGPP DXE wrappers
 
- Refer to docs/Wrapper Dependencies.md for more details
 <br>
 
     $ cd ~/myqemu/qemu-3dfx/wrappers/3dfx

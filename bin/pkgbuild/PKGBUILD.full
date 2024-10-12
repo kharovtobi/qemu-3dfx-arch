@@ -1,11 +1,12 @@
 # Courtesy from kharovtobi <https://github.com/kharovtobi>
 # This repo is not my work! it belongs to kjliew at https://github.com/kjliew/qemu-3dfx (pls support him)
 # Do not post this into AUR! (it breaks some package rules anyway)
-# Default PKGBUILD
-pkgname=qemu-3dfx
+# Full package installed in /usr/qemu-3dfx
+_pkgname=qemu-3dfx
+pkgname=$_pkgname-full
 pkgver=8.2.1
 pkgrel=2
-pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU"
+pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU (Full Package)"
 arch=("x86_64")
 url="https://github.com/kjliew/qemu-3dfx.git"
 license=('GPL-2.0')
@@ -85,6 +86,9 @@ makedepends=(
                                 "zstd"
 # There are other less dependencies depending on what packages you installed.
 )
+optdepends=(
+					        'qemu-3dfx-wrappers: for wrappers in guest systems'
+)
 provides=("qemu-3dfx")
 conflicts=("qemu-3dfx")
 replaces=("qemu-3dfx")
@@ -100,37 +104,34 @@ sha256sums=(
 )
 
 prepare() {
-    tar xf qemu-${pkgver}.tar.xz --directory "$pkgname"
-    cd "$pkgname"/qemu-${pkgver}
+    tar xf qemu-${pkgver}.tar.xz --directory "$_pkgname"
+    cd "$_pkgname"/qemu-${pkgver}
     rsync -r ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
     patch -p0 -i  ../00-qemu82x-mesa-glide.patch
     bash ../scripts/sign_commit
-    rm -rf "$srcdir"/"$pkgname"/build
-    mkdir -p "$srcdir"/"$pkgname"/build
-    cd "$srcdir"/"$pkgname"/build
+    rm -rf "$srcdir"/"$_pkgname"/build
+    mkdir -p "$srcdir"/"$_pkgname"/build
+    cd "$srcdir"/"$_pkgname"/build
     ../qemu-${pkgver}/configure --target-list="i386-softmmu" \
-                                                                  --prefix=/usr \
+                                                                  --prefix=/usr/qemu-3dfx \
                                                                   --enable-opengl \
                                                                   --enable-gtk \
                                                                   --enable-gtk-clipboard \
                                                                   --enable-sdl \
                                                                   --enable-sdl-image \
                                                                   --enable-libusb
-
 }
 
 build() {
-    cd "$srcdir"/"$pkgname"/build
+    cd "$srcdir"/"$_pkgname"/build
     make clean
-    make qemu-system-i386 man
+    make
 }
 
 package() {
-	cd "$srcdir"/"$pkgname"/build/docs
-	cp qemu.1 qemu-3dfx-system-i386.1
-    gzip qemu-3dfx-system-i386.1
-	install -Dm644 "$srcdir"/"$pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
-    install -Dm644 "$srcdir"/"$pkgname"/build/docs/qemu-3dfx-system-i386.1.gz "$pkgdir"/usr/share/man/man1/qemu-3dfx-system-i386.1.gz
-	install -Dm755 "$srcdir"/"$pkgname"/build/qemu-system-i386 "$pkgdir"/usr/bin/qemu-3dfx-system-i386
+	cd "$srcdir"/"$_pkgname"/build
+	make DESTDIR="$pkgdir/" install
+	install -Dm644 "$srcdir"/"$_pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$_pkgname"/LICENSE
+
 
 }
