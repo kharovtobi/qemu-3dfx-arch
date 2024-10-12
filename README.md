@@ -3,17 +3,19 @@ This is a fork of QEMU-3dfx for Arch Linux or any OS with pacman command
 
 For more info. Refer to the original repo
 ## Content
-    qemu-0/hw/3dfx      - Overlay for QEMU source tree to add 3Dfx Glide pass-through device model
-    qemu-1/hw/mesa      - Overlay for QEMU source tree to add MESA GL pass-through device model
-    scripts/sign_commit - Script for stamping commit id
-    wrappers/3dfx       - Glide wrappers for supported guest OS/environment (DOS/Windows/DJGPP/Linux)
-    wrappers/mesa       - MESA GL wrapper for supported guest OS/environment (Windows)
-    bin/PKGBUILD        - Script for building the packages
-    bin/disks/fd.ima    - Windows 9x Floppy disk with some tools included
+    qemu-0/hw/3dfx       - Overlay for QEMU source tree to add 3Dfx Glide pass-through device model
+    qemu-1/hw/mesa       - Overlay for QEMU source tree to add MESA GL pass-through device model
+    scripts/sign_commit  - Script for stamping commit id
+    wrappers/3dfx        - Glide wrappers for supported guest OS/environment (DOS/Windows/DJGPP/Linux)
+    wrappers/mesa        - MESA GL wrapper for supported guest OS/environment (Windows)
+    wrappers/buildiso.sh - Script for making Wrapper Disk
+    bin/PKGBUILD         - Script for building the packages
+    bin/disks/fd.ima     - Windows 9x Floppy disk with some tools included
 ## Patch
     00-qemu82x-mesa-glide.patch - Patch for QEMU version 8.2.x (MESA & Glide)
     01-qemu72x-mesa-glide.patch - Patch for QEMU version 7.2.x (MESA & Glide)
     02-qemu620-mesa-glide.patch - Patch for QEMU version 6.2.0 (MESA & Glide)
+    03-qemu82x-kharovtobi.patch - Patch for QEMU version 8.2.x (MESA & Glide) (Modified)
 ## QEMU Windows Guests Glide/OpenGL/Direct3D Acceleration
 Witness, experience and share your thoughts on modern CPU/GPU prowess for retro Windows games on Apple Silicon macOS, Windows 10/11 and modern Linux. Most games can be installed and played in pristine condition without the hassle of hunting down unofficial, fan-made patches to play them on Windows 10/later or modern Linux/Wine.
 - Original repository ( https://github.com/kjliew/qemu-3dfx)
@@ -53,7 +55,6 @@ Simple guide to apply the patch:<br>
     $ ../qemu-8.2.1/configure --target-list="i386-softmmu"
     $ make
 
-**Note:**
 - All patch hunks must be successful in order for the binary to run properly.
 
 ## Building Guest Wrappers
@@ -75,6 +76,9 @@ Simple guide to apply the patch:<br>
     $ mkdir build && cd build
     $ bash ../../../scripts/conf_wrapper
     $ make && make clean
+
+ - Run `buildiso.sh` to make a Wrapper Disk with tools installed via the internet. If you have kjliew's `vmaddons.iso`, It will extract files into the iso to add WineD3D libraries. If not, it will download JHRobotics wine9x libraries instead.
+ - The buildiso.sh also works on kjliew's or any forked qemu-3dfx repository. Copy (no overwrite) the wrapper folder into the other repo's wrapper folder
 
 ## Installing Guest Wrappers
 **For Win9x/ME:**  
