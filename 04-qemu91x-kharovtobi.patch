@@ -1,7 +1,7 @@
 diff -Nru ../orig/qemu-9.1.0/accel/kvm/kvm-all.c ./accel/kvm/kvm-all.c
 --- ../orig/qemu-9.1.0/accel/kvm/kvm-all.c
 +++ ./accel/kvm/kvm-all.c
-@@ -1488,6 +1488,41 @@
+@@ -1604,6 +1604,41 @@
      return 0;
  }
 
@@ -78,7 +78,7 @@ diff -Nru ../orig/qemu-9.1.0/hw/i386/pc.c ./hw/i386/pc.c
 diff -Nru ../orig/qemu-9.1.0/include/hw/i386/pc.h ./include/hw/i386/pc.h
 --- ../orig/qemu-9.1.0/include/hw/i386/pc.h
 +++ ./include/hw/i386/pc.h
-@@ -195,6 +195,22 @@
+@@ -204,6 +204,22 @@
  
  #define TYPE_PORT92 "port92"
  
@@ -106,7 +106,7 @@ diff -Nru ../orig/qemu-9.1.0/include/sysemu/kvm.h ./include/sysemu/kvm.h
 +++ ./include/sysemu/kvm.h
 @@ -437,6 +437,8 @@
  
- #endif /* NEED_CPU_H */
+#endif /* COMPILING_PER_TARGET */
  
 +void kvm_update_guest_pa_range(uint64_t start_pa, uint64_t size, void *host_va, int readonly, int add);
 +
@@ -116,7 +116,7 @@ diff -Nru ../orig/qemu-9.1.0/include/sysemu/kvm.h ./include/sysemu/kvm.h
 diff -Nru ../orig/qemu-9.1.0/include/sysemu/whpx.h ./include/sysemu/whpx.h
 --- ../orig/qemu-9.1.0/include/sysemu/whpx.h
 +++ ./include/sysemu/whpx.h
-@@ -19,6 +19,8 @@
+@@ -20,6 +20,8 @@
 
  #ifdef CONFIG_WHPX
 
@@ -168,7 +168,7 @@ diff -Nru ../orig/qemu-9.1.0/include/ui/console.h ./include/ui/console.h
 diff -Nru ../orig/qemu-9.1.0/meson.build ./meson.build
 --- ../orig/qemu-9.1.0/meson.build
 +++ ./meson.build
-@@ -1266,6 +1266,7 @@
+@@ -1481,6 +1481,7 @@
      error('sdl-image required, but SDL was @0@'.format(
            get_option('sdl').disabled() ? 'disabled' : 'not found'))
    endif
@@ -176,7 +176,7 @@ diff -Nru ../orig/qemu-9.1.0/meson.build ./meson.build
    sdl_image = not_found
  endif
 
-@@ -3432,6 +3433,8 @@
+@@ -3546,6 +3547,8 @@
                           arguments: ['@INPUT@', '@EXTRA_ARGS@', '-o', '@OUTPUT@'])
    subdir('libdecnumber')
    subdir('target')
@@ -185,13 +185,13 @@ diff -Nru ../orig/qemu-9.1.0/meson.build ./meson.build
  endif
  
  subdir('audio')
-@@ -3768,6 +3771,11 @@
+@@ -3883,6 +3886,11 @@
    target_inc = [include_directories('target' / config_target['TARGET_BASE_ARCH'])]
-   if targetos == 'linux'
+   if host_os == 'linux'
      target_inc += include_directories('linux-headers', is_system: true)
 +    link_args += ['-ldl', '-lX11', '-lXxf86vm', '-lGL']
 +  endif
-+  if targetos == 'darwin'
++  if host_os == 'darwin'
 +    c_args += ['-I/opt/X11/include']
 +    link_args += ['-L/opt/X11/lib', '-lX11', '-lXxf86vm', '-lGL', '-Wl,-framework,OpenGL']
    endif
@@ -200,7 +200,7 @@ diff -Nru ../orig/qemu-9.1.0/meson.build ./meson.build
 diff -Nru ../orig/qemu-9.1.0/system/vl.c ./system/vl.c
 --- ../orig/qemu-9.1.0/system/vl.c
 +++ ./system/vl.c
-@@ -864,6 +864,13 @@
+@@ -871,6 +871,13 @@
      return default_machineclass;
  }
 
@@ -208,7 +208,7 @@ diff -Nru ../orig/qemu-9.1.0/system/vl.c ./system/vl.c
 +{
 +    const char rev_[ALIGNED(1)]
 +        ;
-+    printf("   featuring QEMU-3dfx passthrough commit ID@%s"__TIME__" "__DATE__" build\n", rev_);
++    printf("  Featuring MESA GL/3Dfx Glide Pass-Through commit ID@%s"__TIME__" "__DATE__" build\n", rev_);
 +}
 +
  static void version(void)
@@ -233,7 +233,7 @@ diff -Nru ../orig/qemu-9.1.0/target/i386/whpx/whpx-all.c ./target/i386/whpx/whpx
  #include "exec/address-spaces.h"
  #include "exec/ioport.h"
  #include "gdbstub/helpers.h"
-@@ -2370,6 +2371,38 @@
+@@ -2365,6 +2366,38 @@
                          memory_region_is_rom(mr), mr->name);
  }
 
@@ -287,7 +287,7 @@ diff -Nru ../orig/qemu-9.1.0/ui/console.c ./ui/console.c
  void graphic_hw_update_done(QemuConsole *con)
  {
      if (con) {
-@@ -140,6 +145,8 @@
+@@ -139,6 +144,8 @@
          return;
      }
      if (con->hw_ops->gfx_update) {
