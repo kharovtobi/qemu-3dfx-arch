@@ -2,17 +2,16 @@
 # This repo is not my work! it belongs to kjliew at https://github.com/kjliew/qemu-3dfx (pls support him)
 # Do not post this into AUR! (it breaks some package rules anyway)
 # Full package installed in /usr/qemu-3dfx
+
+
 _pkgname=qemu-3dfx
 pkgname=$_pkgname-full
 pkgver=8.2.1
 pkgrel=2
-pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU (Full Package)"
+pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU (Standalone package)"
 arch=("x86_64")
 url="https://github.com/kjliew/qemu-3dfx.git"
 license=('GPL-2.0')
-depends=("seabios"
-                     "qemu-base"
-)
 makedepends=(
                                 "base"
                                 "base-devel"
@@ -132,6 +131,4 @@ package() {
 	cd "$srcdir"/"$_pkgname"/build
 	make DESTDIR="$pkgdir/" install
 	install -Dm644 "$srcdir"/"$_pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$_pkgname"/LICENSE
-
-
 }

@@ -208,7 +208,7 @@ diff -Nru ../orig/qemu-9.1.0/system/vl.c ./system/vl.c
 +{
 +    const char rev_[ALIGNED(1)]
 +        ;
-+    printf("   featuring QEMU-3dfx passthrough commit ID@%s"__TIME__" "__DATE__" build\n", rev_);
++    printf("   featuring MESA GL/3Dfx Glide Pass-Through commit %s"__TIME__" "__DATE__" build\n", rev_);
 +}
 +
  static void version(void)

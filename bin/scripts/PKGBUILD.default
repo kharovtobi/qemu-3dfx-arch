@@ -2,6 +2,9 @@
 # This repo is not my work! it belongs to kjliew at https://github.com/kjliew/qemu-3dfx (pls support him)
 # Do not post this into AUR! (it breaks some package rules anyway)
 # Default PKGBUILD
+
+
+
 pkgname=qemu-3dfx
 pkgver=8.2.1
 pkgrel=2

@@ -1,7 +1,9 @@
-# Maintainer:kharovtobi <https://github.com/kharovtobi>
+# Courtesy from kharovtobi <https://github.com/kharovtobi>
 # This repo is not my work! it belongs to kjliew at https://github.com/kjliew/qemu-3dfx (pls support him)
 # Do not post this into AUR! (it breaks some package rules anyway)
-# the PKGBUILD is dependent on My repository and uses my own patch. Results may be varied
+# The PKGBUILD is dependent on My repository and uses my patch. Results may be varied
+
+
 
 pkgname=qemu-3dfx
 pkgver=9.1.0
@@ -31,6 +33,7 @@ makedepends=(
                                 "gcc-libs"
                                 "gdk-pixbuf2"
                                 "glib2"
+                                "glibc"
                                 "glib2-devel"
                                 "glusterfs"
                                 "gnutls"

@@ -1,19 +1,17 @@
-# Maintainer:kharovtobi <tugboat_khatov@outlook.com>
+# Courtesy from kharovtobi <https://github.com/kharovtobi>
 # This repo is not my work! it belongs to kjliew at https://github.com/kjliew/qemu-3dfx (pls support him)
 # Do not post this into AUR! (it breaks some package rules anyway)
-# the PKGBUILD is dependent on My repository. Results may be varied
+# The PKGBUILD is dependent on My repository and uses my patch. Results may be varied
+# Full package installed in /usr/qemu-3dfx
 
-pkgname=qemu-3dfx
-pkgver=8.2.1
-pkgrel=2
-pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU"
+_pkgname=qemu-3dfx
+pkgname=$_pkgname-full
+pkgver=9.1.0
+pkgrel=1
+pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU (Standalone package)"
 arch=("x86_64")
 url="https://github.com/kharovtobi/qemu-3dfx.git"
 license=('GPL-2.0')
-depends=("seabios"
-                     "qemu-common"
-                     "qemu-img"
-)
 makedepends=(
                                 "base"
                                 "base-devel"
@@ -32,6 +30,7 @@ makedepends=(
                                 "gcc-libs"
                                 "gdk-pixbuf2"
                                 "glib2"
+                                "glibc"
                                 "glib2-devel"
                                 "glusterfs"
                                 "gnutls"
@@ -71,6 +70,7 @@ makedepends=(
                                 "python-distlib"
                                 "python-sphinx"
                                 "python-sphinx_rtd_theme"
+                                "pixman"
                                 "sdl2"
                                 "sdl2_image"
                                 "snappy"
@@ -99,35 +99,36 @@ source=(
 noextract=("qemu-${pkgver}.tar.xz")
 sha256sums=(
                             'SKIP'
-                            '8562751158175f9d187c5f22b57555abe3c870f0325c8ced12c34c6d987729be'
+                            '816b7022a8ba7c2ac30e2e0cf973e826f6bcc8505339603212c5ede8e94d7834'
 )
 
 prepare() {
-    tar xvf qemu-${pkgver}.tar.xz --directory "$pkgname"
-    cd "$pkgname"/qemu-${pkgver}
-    rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
-    patch -p0 --verbose -i  ../03-qemu82x-kharovtobi.patch
+    tar xf qemu-${pkgver}.tar.xz --directory "$_pkgname"
+    cd "$_pkgname"/qemu-${pkgver}
+    rsync -r ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
+    patch -p0 -i  ../04-qemu91x-kharovtobi.patch
     bash ../scripts/sign_commit
-    cd "$srcdir"/"$pkgname"/build
-}
-
-build() {
-    cd "$srcdir"/"$pkgname"/build
+    rm -rf "$srcdir"/"$_pkgname"/build
+    mkdir -p "$srcdir"/"$_pkgname"/build
+    cd "$srcdir"/"$_pkgname"/build
     ../qemu-${pkgver}/configure --target-list="i386-softmmu" \
-                                                                  --prefix=/usr/qemu-3dfx
+                                                                  --prefix=/usr/qemu-3dfx \
                                                                   --enable-opengl \
                                                                   --enable-gtk \
                                                                   --enable-gtk-clipboard \
                                                                   --enable-sdl \
                                                                   --enable-sdl-image \
                                                                   --enable-libusb
+}
 
+build() {
+    cd "$srcdir"/"$_pkgname"/build
     make clean
     make
 }
 
 package() {
-	cd "$srcdir"/"$pkgname"/build
+	cd "$srcdir"/"$_pkgname"/build
 	make DESTDIR="$pkgdir/" install
-	install -Dm644 "$srcdir"/"$pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
+	install -Dm644 "$srcdir"/"$_pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$_pkgname"/LICENSE
 }
