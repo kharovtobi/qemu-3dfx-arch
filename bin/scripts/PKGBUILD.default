@@ -119,7 +119,6 @@ prepare() {
                                                                   --enable-sdl \
                                                                   --enable-sdl-image \
                                                                   --enable-libusb
-
 }
 
 build() {
@@ -135,5 +134,4 @@ package() {
 	install -Dm644 "$srcdir"/"$pkgname"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
     install -Dm644 "$srcdir"/"$pkgname"/build/docs/qemu-3dfx-system-i386.1.gz "$pkgdir"/usr/share/man/man1/qemu-3dfx-system-i386.1.gz
 	install -Dm755 "$srcdir"/"$pkgname"/build/qemu-system-i386 "$pkgdir"/usr/bin/qemu-3dfx-system-i386
-
 }

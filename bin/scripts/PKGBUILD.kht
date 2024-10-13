@@ -13,7 +13,7 @@ arch=("x86_64")
 url="https://github.com/kharovtobi/qemu-3dfx.git"
 license=('GPL-2.0')
 depends=("seabios"
-                    "qemu-base"
+                     "qemu-base"
 )
 makedepends=(
                                 "base"
@@ -73,6 +73,7 @@ makedepends=(
                                 "python-distlib"
                                 "python-sphinx"
                                 "python-sphinx_rtd_theme"
+                                "pixman"
                                 "sdl2"
                                 "sdl2_image"
                                 "snappy"
@@ -96,27 +97,32 @@ source=(
 
 )
 noextract=("qemu-${pkgver}.tar.xz")
+sha256sums=(
+                            'SKIP'
+                            '816b7022a8ba7c2ac30e2e0cf973e826f6bcc8505339603212c5ede8e94d7834'
+)
 
 prepare() {
-    tar xvf qemu-${pkgver}.tar.xz --directory "$pkgname"
+    tar xf qemu-${pkgver}.tar.xz --directory "$pkgname"
     cd "$pkgname"/qemu-${pkgver}
-    rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
-    patch -p0 --verbose -i  ../04-qemu91x-kharovtobi.patch
+    rsync -r ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
+    patch -p0 -i  ../04-qemu91x-kharovtobi.patch
     bash ../scripts/sign_commit
-    cd "$srcdir"/"$pkgname"/build
-}
-
-build() {
+    rm -rf "$srcdir"/"$pkgname"/build
+    mkdir -p "$srcdir"/"$pkgname"/build
     cd "$srcdir"/"$pkgname"/build
     ../qemu-${pkgver}/configure --target-list="i386-softmmu" \
-                                                                  --prefix=/usr/qemu-3dfx \
+                                                                  --prefix=/usr \
                                                                   --enable-opengl \
                                                                   --enable-gtk \
                                                                   --enable-gtk-clipboard \
                                                                   --enable-sdl \
                                                                   --enable-sdl-image \
                                                                   --enable-libusb
+}
 
+build() {
+    cd "$srcdir"/"$pkgname"/build
     make clean
     make qemu-system-i386 man
 }
