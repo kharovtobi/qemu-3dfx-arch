@@ -106,7 +106,7 @@ diff -Nru ../orig/qemu-9.1.0/include/sysemu/kvm.h ./include/sysemu/kvm.h
 +++ ./include/sysemu/kvm.h
 @@ -437,6 +437,8 @@
  
-#endif /* COMPILING_PER_TARGET */
+ #endif /* NEED_CPU_H */
  
 +void kvm_update_guest_pa_range(uint64_t start_pa, uint64_t size, void *host_va, int readonly, int add);
 +
@@ -116,7 +116,7 @@ diff -Nru ../orig/qemu-9.1.0/include/sysemu/kvm.h ./include/sysemu/kvm.h
 diff -Nru ../orig/qemu-9.1.0/include/sysemu/whpx.h ./include/sysemu/whpx.h
 --- ../orig/qemu-9.1.0/include/sysemu/whpx.h
 +++ ./include/sysemu/whpx.h
-@@ -20,6 +20,8 @@
+@@ -19,6 +19,8 @@
 
  #ifdef CONFIG_WHPX
 
@@ -200,7 +200,7 @@ diff -Nru ../orig/qemu-9.1.0/meson.build ./meson.build
 diff -Nru ../orig/qemu-9.1.0/system/vl.c ./system/vl.c
 --- ../orig/qemu-9.1.0/system/vl.c
 +++ ./system/vl.c
-@@ -871,6 +871,13 @@
+@@ -864,6 +864,13 @@
      return default_machineclass;
  }
 
@@ -208,7 +208,7 @@ diff -Nru ../orig/qemu-9.1.0/system/vl.c ./system/vl.c
 +{
 +    const char rev_[ALIGNED(1)]
 +        ;
-+    printf("  Featuring MESA GL/3Dfx Glide Pass-Through commit ID@%s"__TIME__" "__DATE__" build\n", rev_);
++    printf("   featuring QEMU-3dfx passthrough commit ID@%s"__TIME__" "__DATE__" build\n", rev_);
 +}
 +
  static void version(void)
@@ -233,7 +233,7 @@ diff -Nru ../orig/qemu-9.1.0/target/i386/whpx/whpx-all.c ./target/i386/whpx/whpx
  #include "exec/address-spaces.h"
  #include "exec/ioport.h"
  #include "gdbstub/helpers.h"
-@@ -2365,6 +2366,38 @@
+@@ -2370,6 +2371,38 @@
                          memory_region_is_rom(mr), mr->name);
  }
 
@@ -287,7 +287,7 @@ diff -Nru ../orig/qemu-9.1.0/ui/console.c ./ui/console.c
  void graphic_hw_update_done(QemuConsole *con)
  {
      if (con) {
-@@ -139,6 +144,8 @@
+@@ -140,6 +145,8 @@
          return;
      }
      if (con->hw_ops->gfx_update) {
