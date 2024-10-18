@@ -3,6 +3,12 @@ name: qemu-linux
 on:
   workflow_dispatch:
   
+  
+  push:
+    branches: [ workflow ]
+  pull_request:
+    branches: [ workflow ]
+  
 jobs:
   build:
 
