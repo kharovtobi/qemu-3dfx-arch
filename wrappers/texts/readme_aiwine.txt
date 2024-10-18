@@ -39,13 +39,12 @@ This binary is a failure and must be recompiled again. (worst case)
 =================================================================================================
 DirectX Support
 
-This wrapper now contains WineD3D libraries courtesy from kjliew if you
-have bsdtar on host and vmaddons.iso in same directory as build script
-by donating to him.
+This wrapper now contains WineD3D libraries courtesy from adolfintel if you
+have wget and unzip on host
+https://fdossena.com/?=wined3d/index.frag
 
 Note
-There is a different versions of wine libraries depending on your needs
-Recommended is 6.0.4.
+refer to another readme on wine folder for more details
 
 Installation
 DirectX 1-7

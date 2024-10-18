@@ -11,7 +11,10 @@ LDFLAGS=-static-libgcc
 LDFLAGS+=-Wl,--disable-auto-image-base,--no-seh,--dynamicbase,--nxcompat
 SRCDIR=../src
 TARGET=opengl32.dll
-TOOLS=wglinfo.exe
+TARGETICD=qmfxgl32.dll
+TOOLSTS=wgltest.exe
+TOOLSIN=wglinfo.exe
+TOOLSGL=wglgears.exe
 GENDEF=gendef
 
 C_OBJS:=\
@@ -22,8 +25,12 @@ C_OBJS:=\
     fxtime.o \
     md5.o \
 
+ifdef SOFTGPU
+CFLAGS := $(filter-out -flto=auto -march=x86-64-v2 -mtune=generic  -Werror,$(CFLAGS)) -march=pentium2 -mtune=core2
+endif
 
-all: fxlib $(TARGET) exports-check $(TOOLS)
+all: fxlib $(TARGET) exports-check $(TOOLSTS)
+all+: fxlib $(TARGET) $(TARGETICD) exports-check $(TOOLSTS) $(TOOLSIN) $(TOOLSGL)
 
 exports-check: $(TARGET)
 	@if [ $$(objdump -x $(TARGET) | grep "\[[\ 0-9]*\]" | grep -v "^\[" | \
@@ -40,14 +47,45 @@ $(TARGET): $(C_OBJS) szdata.o wrapgl32.o stamp.o
 	@echo "  LD  $@"
 	@$(CC) -shared $(CFLAGS) -o $@ $(@:dll=def) $+ $(LDFLAGS)
 
-$(TOOLS):
+wrapgl32_gears.o: wrapgl32.o
+
+$(TARGETICD): $(C_OBJS) szdata.o wrapgl32_icd.o icddrv.o stamp.o
+	@echo "  CFLAGS  $(CFLAGS)"
+	@echo "  LDFLAGS $(LDFLAGS)"
+	@$(CC) -shared $(CFLAGS) -o $@ $+ $(LDFLAGS)
+	@$(GENDEF) - $@ | sed "s/\(@[0-9]*\)@.*/\1/;s/\(^.*\)\(@[0-9]*\)/\1\ =\ \1\2/;/CallWndProc/d;s/^mgl/wgl/;s/wgd//;s/^mgd/Drv/;/^private/d" | \
+		sed "s/\ ;\ Check!!!.*//;/lto_priv/d;/CallWndProc/d" | \
+		grep -e ^LIB -e ^EXP -e "\ =\ " > $(@:.dll=.def)
+	@echo "  LD  $@"
+	@$(CC) -shared $(CFLAGS) -o $@ $(@:dll=def) $+ $(LDFLAGS)
+
+$(TOOLSTS):
+	@echo "  LD  $@"
+	@$(CC) $(CFLAGS) -s -o $@ $(SRCDIR)/wgltest.c $(LDFLAGS) -lgdi32 -lopengl32
+
+$(TOOLSGL):
+	@echo "  LD  $@"
+	@$(CC) $(CFLAGS) -s -o $@ $(SRCDIR)/wglgears.c $(LDFLAGS) -lgdi32 -lopengl32
+
+$(TOOLSIN):
 	@echo "  LD  $@"
 	@$(CC) $(CFLAGS) -s -o $@ $(SRCDIR)/wglinfo.c $(LDFLAGS) -lgdi32 -lopengl32
 
+
+ifndef SOFTGPU
 stamp.o:
 	@git rev-parse HEAD | sed "s/\(.......\).*/const\ char\ rev_\[\]\ =\ \"\1\-\";/" > /tmp/$(@:o=c)
 	@echo -n "  REV $@"; cat /tmp/$(@:o=c) | sed "s/.*rev_\[\]\ =//;s/;//"
 	@$(CC) -c -o $@ /tmp/$(@:o=c)
+
+else
+stamp.o:
+	@echo $(SOFTGPU) | sed "s/\(.......\).*/const\ char\ rev_\[\]\ =\ \"\1\-\";/" > /tmp/$(@:o=c)
+	@echo -n "  REV $@"; cat /tmp/$(@:o=c) | sed "s/.*rev_\[\]\ =//;s/;//"
+	@$(CC) -c -o $@ /tmp/$(@:o=c)
+
+endif
+
 
 fxlib:
 	@if [ "$$MSYSTEM" != "MINGW32" ]; then echo "Error: MSYSTEM == $$MSYSTEM"; exit 1; fi
@@ -68,5 +106,4 @@ clean:
 	    strings $(TARGET) | grep "\ build\ "; fi
 
 distclean: clean
-	@rm -f $(TARGET) $(TOOLS)
-
+	@rm -f $(TARGET) $(TARGETICD) $(TOOLSIN) $(TOOLSGL ) $(TOOLSTS)

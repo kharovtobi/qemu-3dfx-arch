@@ -12,22 +12,28 @@ For more info. Refer to the original repo
     bin/PKGBUILD         - Script for building the packages
     bin/disks/fd.ima     - Windows 9x Floppy disk with some tools included
 ## Patch
-    00-qemu82x-mesa-glide.patch - Patch for QEMU version 8.2.x (MESA & Glide)
-    01-qemu72x-mesa-glide.patch - Patch for QEMU version 7.2.x (MESA & Glide)
-    02-qemu620-mesa-glide.patch - Patch for QEMU version 6.2.0 (MESA & Glide)
-    03-qemu82x-kharovtobi.patch - My patch for QEMU version 8.2.x (MESA & Glide)
-    04-qemu91x-kharovtobi.patch - My patch for QEMU version 9.1.x (MESA & Glide) (Not Tested!)
+    00-qemu91x-mesa-glide.patch - Patch for QEMU version 9.1.x (MESA & Glide)
+    01-qemu90x-mesa-glide.patch - Patch for QEMU version 9.0.x (MESA & Glide)
+    02-qemu82x-mesa-glide.patch - Patch for QEMU version 8.2.x (MESA & Glide)
 ## QEMU Windows Guests Glide/OpenGL/Direct3D Acceleration
-Witness, experience and share your thoughts on modern CPU/GPU prowess for retro Windows games on Apple Silicon macOS, Windows 10/11 and modern Linux. Most games can be installed and played in pristine condition without the hassle of hunting down unofficial, fan-made patches to play them on Windows 10/later or modern Linux/Wine.
+Witness, experience and share your thoughts on modern CPU/GPU prowess for retro Windows games on Apple Silicon macOS, Windows 10/11 and modern Linux. Most games can be installed and played in pristine condition without the hassle of hunting down unofficial, fan-made patches to play them on Windows 10/later or modern Linux/Wine. And now it's updated for rolling release and added some tools and dlls i copied on the internet to make the experience better (as long i have free time).
 - Original repository ( https://github.com/kjliew/qemu-3dfx)
 - YouTube channel (https://www.youtube.com/channel/UCl8InhZs1ixZBcLrMDSWd0A/videos)
 - VOGONS forums (https://www.vogons.org)
 - Wiki (https://github.com/kjliew/qemu-3dfx/wiki)
+## Downloading QEMU
+(https://github.com/kharovtobi/qemu-3dfx/releases)
+
+This includes binaries, Disks and PKGBUILDS
+
+`bin-linux` for Linux
+
+`bin-windows` for Windows
 ## Building QEMU
 There are two ways to build this repo. While this is repo is used for Arch Linux, It can also build on other OS like Windows 10 with MSYS2. It may not be supported, yet.
 
 **Convenience Way:**
-This way is simple. Just download the PKGBUILD from GitHub.
+This way is simple. Just download the PKGBUILD from GitHub. (Arch-Based distributions)
 
     $ mkdir ~/myqemu && cd ~/myqemu
     $ git clone https://github.com/kharovtobi/qemu-3dfx.git
@@ -35,51 +41,32 @@ This way is simple. Just download the PKGBUILD from GitHub.
     $ makepkg -si
 
 - This scripts builds it for you to install into your system.
+- Default PKGBUILD compiles kjliew's repository!
 - Chroot is recommended! for more details, Go to https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
 
 **Traditional Way:**
-This way is basically the same, But less tedious and compiles only the essentials, making it much faster.
+This way is basically the same, But less tedious and compiles only the essentials, making it much faster. (Any operating systems)
 
 Simple guide to apply the patch:<br>
-(using `00-qemu82x-mesa-glide.patch`)
+(using `00-qemu91x-mesa-glide.patch`)
 
     $ mkdir ~/myqemu && cd ~/myqemu
-    $ git clone https://github.com/kjliew/qemu-3dfx.git
+    $ git clone https://github.com/kharovtobi/qemu-3dfx.git
     $ cd qemu-3dfx
-    $ wget https://download.qemu.org/qemu-8.2.1.tar.xz
-    $ tar xf qemu-8.2.1.tar.xz
-    $ cd qemu-8.2.1
+    $ wget https://download.qemu.org/qemu-9.1.0.tar.xz
+    $ tar xf qemu-9.1.0.tar.xz
+    $ cd qemu-9.1.0
     $ rsync -r ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
-    $ patch -p0 -i ../00-qemu82x-mesa-glide.patch
+    $ patch -p0 -i ../00-qemu91x-mesa-glide.patch
     $ bash ../scripts/sign_commit
     $ mkdir ../build && cd ../build
-    $ ../qemu-8.2.1/configure --target-list="i386-softmmu"
+    $ ../qemu-9.1.0/configure --target-list="i386-softmmu"
     $ make
 
 - All patch hunks must be successful in order for the binary to run properly.
 
 ## Building Guest Wrappers
-**Requirements:**
- - `base-devel` (make, sed, xxd etc.)
- - `gendef, shasum`
- - `mingw32` cross toolchain (`binutils, gcc, windres, dlltool`) for WIN32 DLL wrappers
- - `Open-Watcom-1.9/v2.0` or `Watcom C/C++ 11.0` for DOS32 OVL wrapper
- - `{i586,i686}-pc-msdosdjgpp` cross toolchain (`binutils, gcc, dxe3gen`) for DJGPP DXE wrappers
-
-<br>
-
-    $ cd ~/myqemu/qemu-3dfx/wrappers/3dfx
-    $ mkdir build && cd build
-    $ bash ../../../scripts/conf_wrapper
-    $ make && make clean
-
-    $ cd ~/myqemu/qemu-3dfx/wrappers/mesa
-    $ mkdir build && cd build
-    $ bash ../../../scripts/conf_wrapper
-    $ make && make clean
-
- - Run `buildiso.sh` to make a Wrapper Disk with tools installed via the internet. If you have kjliew's `vmaddons.iso`, It will extract files into the iso to add WineD3D libraries. If not, it will download JHRobotics wine9x libraries instead.
- - The buildiso.sh also works on kjliew's or any forked qemu-3dfx repository. Copy (no overwrite) the wrapper folder into the other repo's wrapper folder
+Refer to https://github.com/kharovtobi/qemu-3dfx-arch/blob/master/wrappers/README.md for more info 
 
 ## Installing Guest Wrappers
 **For Win9x/ME:**  
@@ -93,3 +80,7 @@ Simple guide to apply the patch:<br>
  - Copy `GLIDE.DLL`, `GLIDE2X.DLL` and `GLIDE3X.DLL` to `%SystemRoot%\system32`  
  - Run `INSTDRV.EXE`, require Administrator Priviledge  
  - Copy `OPENGL32.DLL` to `Game Installation` folders
+
+## Credits
+- kjliew - For making QEMU-3dfx 
+- JHRobotics - For making ICD support 
