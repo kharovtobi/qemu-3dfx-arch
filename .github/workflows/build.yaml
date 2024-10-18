@@ -6,12 +6,12 @@ on:
   pull_request:
     branches: [ "master" ]
 
-  env:
-    pkgver: 9.1.0
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      pkgver: 9.1.0
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
