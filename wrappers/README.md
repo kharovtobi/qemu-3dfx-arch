@@ -59,7 +59,7 @@ If you have Watcom installed, run command first
     
 ## Notes
  - Feel free to add anything to iso folder.
- - Run `buildiso.sh` to make a Wrapper Disk with tools installed via the internet automatically. If you have kjliew's `vmaddons.iso`, It will extract files into the iso to add WineD3D libraries. If not, it will either download JHRobotics wine9x libraries or adolfintel (Federico Dossena) WineD3d libraries instead.
+ - Run `buildiso.sh` to make a Wrapper Disk with tools installed via the internet automatically. If you have kjliew's `vmaddons.iso`, It will extract files into the iso to add WineD3D libraries. If not, it will either download JHRobotics wine9x libraries or adolfintel (Federico Dossena) WineD3D libraries instead. (Everything must be compiled first and followed the Building Guest Wrappers instructions!)
  - The buildiso.sh also works on kjliew's or any forked qemu-3dfx repository. Copy the script to the repo's wrapper folder (Required!)
  - ICD support is included via JHRobotics forked repo but disabled by default (im sorry)
  - Making mesa wrappers only compile opengl32.dll and wgltest.exe only. If you want all of them to compile including ICD support, run command in `wrappers/mesa/build` with Makefile
