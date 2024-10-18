@@ -2,48 +2,48 @@ name: qemu-linux
 
 on:
   workflow_dispatch:
-  
-  
+
+
   push:
     branches: [ workflow ]
   pull_request:
     branches: [ workflow ]
-  
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
     env:
-      pkgver: 9.1.0
+      pkgver: '9.1.0'
+      patch:  '00-qemu91x-mesa-glide.patch'
     steps:
     - uses: actions/checkout@v4
     - name: Update dependencies
       run: sudo add-apt-repository main
     - name: Install dependencies
-      run: sudo apt-get install -y --fix-missing git wget patch diffutils build-essential libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev ninja-build libaio-dev libbluetooth-dev libcapstone-dev libcairo2-dev libbrlapi-dev libbz2-dev libcap-ng-dev libgdk-pixbuf-2.0-dev libgtk-3-dev libibverbs-dev libjpeg8-dev libncurses5-dev libnuma-dev libpcre2-dev libpng-dev libpixman-1-dev librbd-dev librdmacm-dev libsdl2-dev libsdl-image1.2-dev libslirp-dev libngspice0-dev libspice-protocol-dev libssh-dev libusb-dev libusbredirhost-dev libvirglrenderer-dev libvde-dev libvdeplug-dev libvte-2.91-dev liblzo2-dev libghc-zlib-dev libzstd1 valgrind xfslibs-dev
+      run: sudo apt-get install -y --fix-missing git wget patch diffutils build-essential sphinx-common sphinx-doc
+ sphinx-rtd-theme-common libglib2.0-dev libfdt-dev libbpf-dev libblkio-dev libpixman-1-dev zlib1g-dev ninja-build libaio-dev libbluetooth-dev libbrlapi-dev libbz2-dev libcapstone-dev libcairo2-dev libcap-ng-dev libcurl4-openssl-dev libdaxctl-dev libfuse-dev libgdbm-dev libgdk-pixbuf-2.0-dev libglusterfs-dev libgtk-3-dev libibverbs-dev libiscsi-dev libjack-dev libjpeg8-dev libkeyutils-dev libncurses5-dev libnfs-dev libnuma-dev libpcre2-dev libpipewire-0.3-dev libpng-dev libpixman-1-dev librbd-dev librdmacm-dev libsdl2-dev libsdl2-image-dev libseccomp-dev libslirp-dev libsnappy-dev libngspice0-dev libspice-protocol-dev libspice-server-dev libssh-dev libusb-dev libusbredirhost-dev liburing-dev libvirglrenderer-dev libvncserver-dev libvde-dev libvdeplug-dev libvte-2.91-dev liblzo2-dev libghc-zlib-dev libzstd1 valgrind xfslibs-dev libdw-dev
     - name: Downloading src
       run: wget https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
     - name: Extracting src
-      run: tar xf qemu-${{ env.pkgver }}.tar.xz
-    - name: rsync files
-      run: rsync -r qemu-0/hw/3dfx qemu-1/hw/mesa qemu-${{ env.pkgver }}/hw/
-    - name: sign commit
+      run: tar xvf qemu-${{ env.pkgver }}.tar.xz
+    - name: Rsync files to src
+      run: rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa qemu-${{ env.pkgver }}/hw/
+    - name: Patching files to src
+      working-directory: ./qemu-${{ env.pkgver }}
+      run: patch -p0 -i ../${{ env.patch }}
+    - name: Stamping commit id
       working-directory: ./qemu-${{ env.pkgver }}
       run: bash ../scripts/sign_commit
-    - name: configure build
+    - name: Configure build options
       working-directory: ./build
-      run:  ../qemu-${{ env.pkgver }}/configure --target-list=i386-softmmu \
-                                    --prefix=/usr/qemu-3dfx \
-                                    --enable-opengl \
-                                    --enable-gtk \
-                                    --enable-gtk-clipboard \
-                                    --enable-sdl \
-                                    --enable-sdl-image \
-                                    --enable-libusb
+      run:  ../qemu-${{ env.pkgver }}/configure --target-list=i386-softmmu --prefix=/usr/qemu-3dfx --enable-opengl --enable-gtk --enable-gtk-clipboard --enable-sdl --enable-sdl-image --enable-libusb --disable-selinux
     - name: Building file
       working-directory: ./build
-      run: ninja
+      run: make
+    - name: Installing file
+      working-directory: ./build
+      run: 	make DESTDIR=./output install
     - uses: actions/upload-artifact@v4
       with:
-       name: qemu-linux
-       path: ./build
+       name: bin-linux-${{ env.pkgver }}-artifact
+       path: ./build/output
