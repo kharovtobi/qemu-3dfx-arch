@@ -51,9 +51,10 @@ If you have Watcom installed, run command first
     $ cp -r ../../mesa/build/* ./
     $ rm Makefile
     
-    $ cd ~/myqemu/qemu-3dfx/wrappers
+    $ cd ~/myqemu/qemu-3dfx/wrappers/iso
     $ cp ../texts/readme_nodx.txt ./readme.txt
     $ echo $(git rev-parse HEAD) > ./commit\ id.txt
+    $ cd ..
     $ mkisofs -o wrappers.iso ./iso
     
 ## Notes
