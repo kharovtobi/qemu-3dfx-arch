@@ -32,7 +32,7 @@ jobs:
       run: bash ../scripts/sign_commit
     - name: configure build
       working-directory: ./build
-      run:  ../qemu-8.2.1/configure --target-list=i386-softmmu \
+      run:  ../qemu-${{ env.pkgver }}/configure --target-list=i386-softmmu \
                                     --prefix=/usr/qemu-3dfx \
                                     --enable-opengl \
                                     --enable-gtk \
