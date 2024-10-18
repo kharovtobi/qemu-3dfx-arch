@@ -10,7 +10,7 @@ pkgver=8.2.1
 pkgrel=2
 pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU (Standalone package)"
 arch=("x86_64")
-url="https://github.com/kjliew/qemu-3dfx.git"
+url="https://github.com/kjliew/qemu-3dfx"
 license=('GPL-2.0')
 makedepends=(
                                 "base"

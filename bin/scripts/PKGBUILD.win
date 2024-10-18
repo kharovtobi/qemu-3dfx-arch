@@ -1,0 +1,112 @@
+# Courtesy from kharovtobi <https://github.com/kharovtobi>
+# This repo is not my work! it belongs to kjliew at https://github.com/kjliew/qemu-3dfx (pls support him)
+# Do not post this into AUR! (its for windows ofc)
+# For Windows 8.1 and later with MSYS2! (Windows 10 1809 with MSYS2/UCRT64 recommended!)
+
+
+_pkgname=qemu-3dfx
+pkgname=$_pkgname-win
+pkgver=8.2.1
+pkgrel=2
+pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU"
+arch=("x86_64")
+url="https://github.com/kjliew/qemu-3dfx"
+license=('GPL-2.0')
+makedepends=(
+                                "base"
+                                "base-devel"
+                                "rsync"
+                                "patch"
+                                "ninja"
+                                "git"                                
+                                "${MINGW_PACKAGE_PREFIX}-python"
+								"${MINGW_PACKAGE_PREFIX}-python-setuptools"
+                                "${MINGW_PACKAGE_PREFIX}-python-distlib"
+                                "${MINGW_PACKAGE_PREFIX}-python-sphinx"
+                                "${MINGW_PACKAGE_PREFIX}-python-sphinx_rtd_theme"
+                                "${MINGW_PACKAGE_PREFIX}-cairo"
+                                "${MINGW_PACKAGE_PREFIX}-capstone"
+                                "${MINGW_PACKAGE_PREFIX}-curl"
+                                "${MINGW_PACKAGE_PREFIX}-dtc"
+								"${MINGW_PACKAGE_PREFIX}-gcc"
+                                "${MINGW_PACKAGE_PREFIX}-gdk-pixbuf2"
+                                "${MINGW_PACKAGE_PREFIX}-glib2"
+                                "${MINGW_PACKAGE_PREFIX}-gnutls"
+                                "${MINGW_PACKAGE_PREFIX}-gtk3"
+                                "${MINGW_PACKAGE_PREFIX}-libcacard"
+                                "${MINGW_PACKAGE_PREFIX}-libepoxy"
+                                "${MINGW_PACKAGE_PREFIX}-libnfs"
+                                "${MINGW_PACKAGE_PREFIX}-libpng"
+                                "${MINGW_PACKAGE_PREFIX}-libslirp"
+								"${MINGW_PACKAGE_PREFIX}-libssh"
+                                "${MINGW_PACKAGE_PREFIX}-libusb"
+								"${MINGW_PACKAGE_PREFIX}-libxml2"
+								"${MINGW_PACKAGE_PREFIX}-lzo2"
+								"${MINGW_PACKAGE_PREFIX}-meson"
+								"${MINGW_PACKAGE_PREFIX}-ncurses"
+                                "${MINGW_PACKAGE_PREFIX}-pixman"
+								"${MINGW_PACKAGE_PREFIX}-pcre2"
+                                "${MINGW_PACKAGE_PREFIX}-SDL2"
+                                "${MINGW_PACKAGE_PREFIX}-SDL2_image"
+                                "${MINGW_PACKAGE_PREFIX}-snappy"
+                                "${MINGW_PACKAGE_PREFIX}-spice"
+                                "${MINGW_PACKAGE_PREFIX}-spice-protocol"
+                                "${MINGW_PACKAGE_PREFIX}-usbredir"
+                                "${MINGW_PACKAGE_PREFIX}-virglrenderer"
+                                "${MINGW_PACKAGE_PREFIX}-zlib"
+                                "${MINGW_PACKAGE_PREFIX}-zstd"
+# There are other less dependencies depending on what packages you installed.
+)
+optdepends=(
+					        'qemu-3dfx-wrappers: for wrappers in guest systems'
+)
+provides=("qemu-3dfx")
+conflicts=("qemu-3dfx")
+replaces=("qemu-3dfx")
+source=(
+                 "git+https://github.com/kjliew/qemu-3dfx.git"
+                "https://download.qemu.org/qemu-${pkgver}.tar.xz"
+
+)
+noextract=("qemu-${pkgver}.tar.xz")
+sha256sums=(
+                            'SKIP'
+                            '8562751158175f9d187c5f22b57555abe3c870f0325c8ced12c34c6d987729be'
+)
+
+prepare() {
+#   tar xf qemu-${pkgver}.tar.xz --directory "$_pkgname" #symlink error, use 7zip instead
+    cd "$_pkgname"/qemu-${pkgver}
+    rsync -r ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
+    patch -p0 -i  ../00-qemu82x-mesa-glide.patch
+    bash ../scripts/sign_commit
+    rm -rf "$srcdir"/"$_pkgname"/build
+    mkdir -p "$srcdir"/"$_pkgname"/build
+    cd "$srcdir"/"$_pkgname"/build
+    ../qemu-${pkgver}/configure --target-list="i386-softmmu" \
+                                                                  --prefix=/usr/qemu-3dfx \
+                                                                  --enable-opengl \
+                                                                  --enable-gtk \
+                                                                  --enable-gtk-clipboard \
+                                                                  --enable-sdl \
+                                                                  --enable-sdl-image \
+                                                                  --enable-libusb
+}
+
+build() {
+    cd "$srcdir"/"$_pkgname"/build
+    make clean
+    make
+}
+
+package() {
+    tar xf qemu-${pkgver}.tar.xz --directory "$pkgname"
+	cd "$srcdir"/"$_pkgname"/build
+	make DESTDIR="$pkgdir/" install
+	mkdir "$srcdir"/output
+	make DESTDIR="$srcdir"/output install
+	cp "$srcdir"/"$_pkgname"/LICENSE "$srcdir"/output
+	install -Dm644 "$srcdir"/"$_pkgname"/LICENSE "$pkgdir"/usr/qemu-3dfx/share/licenses/"$_pkgname"/LICENSE
+
+
+}

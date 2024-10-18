@@ -10,7 +10,7 @@ pkgver=9.1.0
 pkgrel=1
 pkgdesc="MESA GL/3Dfx Glide pass-through for QEMU"
 arch=("x86_64")
-url="https://github.com/kharovtobi/qemu-3dfx.git"
+url="https://github.com/kharovtobi/qemu-3dfx"
 license=('GPL-2.0')
 depends=("seabios"
                      "qemu-base"
