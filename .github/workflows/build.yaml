@@ -30,8 +30,6 @@ jobs:
     - name: sign commit
       working-directory: ./qemu-${{ env.pkgver }}
       run: bash ../scripts/sign_commit
-    - name: Making building directory
-      run: mkdir build
     - name: configure build
       working-directory: ./build
       run:  ../qemu-8.2.1/configure --target-list=i386-softmmu \
