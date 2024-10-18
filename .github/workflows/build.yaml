@@ -17,6 +17,8 @@ jobs:
       pkgver: 9.1.0
     steps:
     - uses: actions/checkout@v4
+    - name: Update dependencies
+      run: sudo apt update
     - name: Install dependencies
       run: sudo apt-get install -y --fix-missing \
             git \
