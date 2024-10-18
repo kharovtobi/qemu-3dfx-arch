@@ -19,9 +19,6 @@ jobs:
     - uses: actions/checkout@v4
     - name: Update dependencies
       run: sudo add-apt-repository main
-      run: sudo add-apt-repository universe
-      run: sudo add-apt-repository restricted
-      run: sudo add-apt-repository multiverse  
     - name: Install dependencies
       run: sudo apt-get install -y --fix-missing \
             git \
