@@ -37,7 +37,7 @@ jobs:
         cd wrappers/3dfx
         mkdir build && cd build
         dir
-        bash ../../../scripts/conf-wrapper
+        bash ../../../scripts/conf_wrapper
         make && make clean
 
      - name: Build Mesa wrappers 
@@ -46,7 +46,7 @@ jobs:
         cd wrappers/3dfx
         mkdir build && cd build
         dir
-        bash ../../../scripts/conf-wrapper
+        bash ../../../scripts/conf_wrapper
         make && make clean
         
      - name: Uploading file
