@@ -67,7 +67,7 @@ jobs:
         make && make clean
 
      - name: Build Mesa wrappers
-     - shell: msys2 {0}
+       shell: msys2 {0}
        run: |
         cd wrappers/mesa
         mkdir build && cd build
