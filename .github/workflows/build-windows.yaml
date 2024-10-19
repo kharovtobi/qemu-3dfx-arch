@@ -23,15 +23,37 @@ jobs:
        with:
           msystem: MINGW32
      - shell: msys2 {0}
+     
+     - name: Install wrapper dependencies
        run: |
         pacman -Sy --noconfirm --needed \
         base \
         base-devel \
         vim \
         perl \
+        coreutils \
         mingw-w64-i686-tools \
         mingw-w64-i686-binutils \
         mingw-w64-i686-gcc \
+
+     - name: Adding Watcom support
+       run: |
+         wget https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.xz
+         mkdir watcom
+         tar xf ow-snapshot.tar.xz -C watcom
+         export WATCOM=$(pwd)/watcom
+         export PATH=$WATCOM/binl64:$WATCOM/binl:$PATH
+         export EDPATH=$WATCOM/eddat
+         export INCLUDE=$WATCOM/lh
+
+     - name: Adding djgpp support 
+       run: |
+         wget https://github.com/andrewwutw/build-djgpp/releases/download/v3.4/djgpp-mingw-gcc1220.zip
+         unzip djgpp-mingw-gcc1220.zip
+         mv djgpp/setenv djgpp/setenv.sh
+         chmod +x djgpp/setenv.sh
+         ./djgpp/setenv.sh
+         
         
      - name: Build 3dfx wrappers
        run: |
