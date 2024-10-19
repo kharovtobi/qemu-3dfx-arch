@@ -36,15 +36,15 @@ jobs:
         mingw-w64-i686-gcc \
         
      - name: Run 3dfx
-       uses: msys2/setup-msys2@v2
-       with:
-          msystem: MINGW32
      - shell: msys2 {0}
        working-directory: ./wrappers/3dfx
        run: |
+        dir
         mkdir build
         cd build
         bash ../../../scripts/conf-wrapper
+        make && make clean
+        
 
      
 
