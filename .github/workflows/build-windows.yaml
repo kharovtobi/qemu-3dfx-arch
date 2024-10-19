@@ -41,7 +41,7 @@ jobs:
           mingw-w64-ucrt-x86_64-python-sphinx
           mingw-w64-ucrt-x86_64-python-sphinx_rtd_theme
           mingw-w64-ucrt-x86_64-cairo
-          mingw-w64-ucrt-x86_64capstone
+          mingw-w64-ucrt-x86_64-capstone
           mingw-w64-ucrt-x86_64-curl
           mingw-w64-ucrt-x86_64-dtc
           mingw-w64-ucrt-x86_64-gcc
@@ -98,7 +98,7 @@ jobs:
        shell: msys2 {0}
        run: 	make DESTDIR=./output install
        
-     - name: Uploading file
+     - name: Uploading build
        uses: actions/upload-artifact@v4
        with:
         name: bin-windows-${{ env.pkgver }}-artifact
@@ -149,7 +149,6 @@ jobs:
                  tar xf djgpp-linux64-gcc1220.tar.bz2
                  cp -v djgpp/i586-pc-msdosdjgpp/bin/dxe* djgpp/bin
 
-     
               - name: Compile wrappers
                 run: |
                   export WATCOM=$(pwd)/watcom
@@ -163,11 +162,11 @@ jobs:
                   cd wrappers/3dfx
                   mkdir build && cd build
                   bash ../../../scripts/conf_wrapper
-                  make
+                  make && make clean
                   cd ../../mesa
                   mkdir build && cd build
                   bash ../../../scripts/conf_wrapper
-                  make
+                  make && make clean
 
               - name: Installing wrappers
                 working-directory: ./wrappers/iso
