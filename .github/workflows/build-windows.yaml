@@ -9,8 +9,11 @@ on:
     branches: [ workflow ]
 
 jobs:
+
+   
    Build-Windows:
-     runs-on: windows-2019
+   
+     runs-on: windows-2019       
      env:
       pkgver: '9.1.0'
       patch:  '00-qemu91x-mesa-glide.patch'
@@ -22,20 +25,20 @@ jobs:
        uses: msys2/setup-msys2@v2
        with:
           msystem: MINGW32
-     - shell: msys2 {0}
-       run: |
-        pacman -Sy --noconfirm --needed \
-        base \
-        base-devel \
-        vim \
-        perl \
-        coreutils \
-        mingw-w64-i686-tools \
-        mingw-w64-i686-binutils \
-        mingw-w64-i686-gcc \
+          update: true
+          install: >-
+            base
+            base-devel
+            vim
+            perl
+            coreutils
+            mingw-w64-i686-tools
+            mingw-w64-i686-binutils
+            mingw-w64-i686-gcc       
 
      - name: Adding Watcom support
-       run: |
+     - shell: msys2 {0}
+       run:  |
          wget https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.xz
          mkdir watcom
          tar xf ow-snapshot.tar.xz -C watcom
@@ -44,7 +47,8 @@ jobs:
          export EDPATH=$WATCOM/eddat
          export INCLUDE=$WATCOM/lh
 
-     - name: Adding djgpp support 
+     - name: Adding djgpp support
+     - shell: msys2 {0}
        run: |
          wget https://github.com/andrewwutw/build-djgpp/releases/download/v3.4/djgpp-mingw-gcc1220.zip
          unzip djgpp-mingw-gcc1220.zip
@@ -54,6 +58,7 @@ jobs:
          
         
      - name: Build 3dfx wrappers
+     - shell: msys2 {0}
        run: |
         cd wrappers/3dfx
         mkdir build && cd build
@@ -61,10 +66,10 @@ jobs:
         bash ../../../scripts/conf_wrapper
         make && make clean
 
-     - name: Build Mesa wrappers 
-       working-directory: ./wrappers/mesa
+     - name: Build Mesa wrappers
+     - shell: msys2 {0}
        run: |
-        cd wrappers/3dfx
+        cd wrappers/mesa
         mkdir build && cd build
         dir
         bash ../../../scripts/conf_wrapper
