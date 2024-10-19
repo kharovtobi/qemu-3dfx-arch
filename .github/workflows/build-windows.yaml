@@ -34,15 +34,18 @@ jobs:
         mingw-w64-i686-tools \
         mingw-w64-i686-binutils \
         mingw-w64-i686-gcc \
-        
-     - name: Build 3dfx wrappers
+     - name: Make 3dfx build dir
        working-directory: ./wrappers/3dfx
+       run: mkdir build
+     - name: Build 3dfx wrappers
+       working-directory: ./wrappers/3dfx/build
        run: |
         dir
-        mkdir build
-        cd build
         bash ../../../scripts/conf-wrapper
         make && make clean
+     - name: Make mesa build dir
+       working-directory: ./wrappers/3dfx
+       run: mkdir build
      - name: Build mesa wrappers 
        working-directory: ./wrappers/mesa
        run: |
