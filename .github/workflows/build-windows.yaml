@@ -1,4 +1,5 @@
 # Wrapper Disk first then binary i hope 
+# wah
 name: Build Windows
 
 on:
@@ -17,13 +18,16 @@ jobs:
       patch:  '00-qemu91x-mesa-glide.patch'
       
      steps:  
-      - uses: msys2/setup-msys2@v2
-        with:
+     - name: Set-up MSYS2
+       uses: msys2/setup-msys2@v2
+       with:
           msystem: UCRT64
-      - shell: msys2 {0}
+     - shell: msys2 {0}
+       run: | 
+         pacman -Syu
 
-      - name: Install dependencies
-        run: |
+     - name: Install dependencies
+       run: |
           pacman -Syu --noconfirm --needed \
           base \
           base-devel \
@@ -69,8 +73,8 @@ jobs:
           ${MINGW_PACKAGE_PREFIX}-zlib \
           ${MINGW_PACKAGE_PREFIX}-zstd 
           
-      - name: Run test
-        run: |
+     - name: Run test
+       run: |
           dir \
           uname -a
 
