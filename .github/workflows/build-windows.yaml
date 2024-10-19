@@ -1,4 +1,5 @@
-name: Build QEMU binaries in Windows
+#windows tar symlinks help
+name: Build QEMU-3dfx binaries
 
 on:
   workflow_dispatch:
@@ -76,7 +77,7 @@ jobs:
        shell: msys2 {0}
        run:  |
         wget https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
-        tar xf qemu-${{ env.pkgver }}.tar.xz --ignore-failed-read --warning=no-file-ignored
+        tar xf qemu-${{ env.pkgver }}.tar.xz --ignore-failed-read --warning=no-file-ignored > /dev/null
         cd qemu-${{ env.pkgver }}
         rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa ./hw/
         patch -p0 -i ../${{ env.patch }}
@@ -141,6 +142,7 @@ jobs:
                     pkgconf
                     python3
                     git
+                    genisoimage
 
               - name: Adding optional support
                 run:  |
