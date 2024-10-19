@@ -1,5 +1,3 @@
-# Wrapper Disk first then binary i hope 
-# wah
 name: Build Windows
 
 on:
@@ -20,7 +18,6 @@ jobs:
      steps:  
      - name: Checkout repo
        uses: actions/checkout@v4
-
      - name: Install Wrapper dependencies
        uses: msys2/setup-msys2@v2
        with:
@@ -34,24 +31,22 @@ jobs:
         mingw-w64-i686-tools \
         mingw-w64-i686-binutils \
         mingw-w64-i686-gcc \
-     - name: Make 3dfx build dir
-       working-directory: ./wrappers/3dfx
-       run: mkdir build
+        
      - name: Build 3dfx wrappers
-       working-directory: ./wrappers/3dfx/build
        run: |
+        cd wrappers/3dfx
+        mkdir build && cd build
         dir
         bash ../../../scripts/conf-wrapper
         make && make clean
      - name: Make mesa build dir
-       working-directory: ./wrappers/3dfx
-       run: mkdir build
-     - name: Build mesa wrappers 
+
+     - name: Build Mesa wrappers 
        working-directory: ./wrappers/mesa
        run: |
+        cd wrappers/3dfx
+        mkdir build && cd build
         dir
-        mkdir build
-        cd build
         bash ../../../scripts/conf-wrapper
         make && make clean
      - name: Uploading file
