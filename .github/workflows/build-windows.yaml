@@ -20,65 +20,34 @@ jobs:
      steps:  
      - name: Checkout repo
        uses: actions/checkout@v4
-       
-     - name: Set-up MSYS2
+
+     - name: Install Wrapper dependencies
        uses: msys2/setup-msys2@v2
        with:
-          msystem: UCRT64
+          msystem: MINGW32
      - shell: msys2 {0}
-       name: test
        run: |
-          pacman -Sy --noconfirm --needed \
-          base \
-          base-devel \
-          rsync \
-          patch \
-          ninja \
-          wget \
-          git \
-          ${MINGW_PACKAGE_PREFIX}-python \
-          ${MINGW_PACKAGE_PREFIX}-python-setuptools \
-          ${MINGW_PACKAGE_PREFIX}-python-distlib \
-          ${MINGW_PACKAGE_PREFIX}-python-sphinx \
-          ${MINGW_PACKAGE_PREFIX}-python-sphinx_rtd_theme \
-          ${MINGW_PACKAGE_PREFIX}-cairo \
-          ${MINGW_PACKAGE_PREFIX}-capstone \
-          ${MINGW_PACKAGE_PREFIX}-curl \
-          ${MINGW_PACKAGE_PREFIX}-dtc \
-          ${MINGW_PACKAGE_PREFIX}-gcc \
-          ${MINGW_PACKAGE_PREFIX}-gdk-pixbuf2 \
-          ${MINGW_PACKAGE_PREFIX}-glib2 \
-          ${MINGW_PACKAGE_PREFIX}-gnutls \
-          ${MINGW_PACKAGE_PREFIX}-gtk3 \
-          ${MINGW_PACKAGE_PREFIX}-libcacard \
-          ${MINGW_PACKAGE_PREFIX}-libepoxy \
-          ${MINGW_PACKAGE_PREFIX}-libnfs \
-          ${MINGW_PACKAGE_PREFIX}-libpng \
-          ${MINGW_PACKAGE_PREFIX}-libslirp \
-          ${MINGW_PACKAGE_PREFIX}-libssh \
-          ${MINGW_PACKAGE_PREFIX}-libusb \
-          ${MINGW_PACKAGE_PREFIX}-libxml2 \
-          ${MINGW_PACKAGE_PREFIX}-lzo2 \
-          ${MINGW_PACKAGE_PREFIX}-meson \
-          ${MINGW_PACKAGE_PREFIX}-ncurses \
-          ${MINGW_PACKAGE_PREFIX}-pixman \
-          ${MINGW_PACKAGE_PREFIX}-pcre2 \
-          ${MINGW_PACKAGE_PREFIX}-SDL2 \
-          ${MINGW_PACKAGE_PREFIX}-SDL2_image \
-          ${MINGW_PACKAGE_PREFIX}-snappy \
-          ${MINGW_PACKAGE_PREFIX}-spice \
-          ${MINGW_PACKAGE_PREFIX}-spice-protocol \
-          ${MINGW_PACKAGE_PREFIX}-usbredir \
-          ${MINGW_PACKAGE_PREFIX}-virglrenderer \
-          ${MINGW_PACKAGE_PREFIX}-zlib \
-          ${MINGW_PACKAGE_PREFIX}-zstd 
-          
-     - name: Run test
+        pacman -Sy --noconfirm --needed \
+        base-devel \
+        vim \
+        {MINGW_PACKAGE_PREFIX}-tools \
+        {MINGW_PACKAGE_PREFIX}-binutils \
+        {MINGW_PACKAGE_PREFIX}-gcc \
+        
+     - name: Run 3dfx
+       uses: msys2/setup-msys2@v2
+       with:
+          msystem: MINGW32
+     - shell: msys2 {0}
+       working-directory: ./wrappers/3dfx
        run: |
-          dir
-          uname -a
+        mkdir build
+        cd build
+        bash ../../../scripts/conf-wrapper
 
-     - name: Downloading src
-       run: wget https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
+     
+
+     
+
 
         
