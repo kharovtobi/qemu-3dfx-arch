@@ -23,7 +23,7 @@ jobs:
        with:
           msystem: UCRT64
      - shell: msys2 {0}
-     - name: Install dependencies
+       name: Install dependencies
        run: |
           pacman -Syu --noconfirm --needed \
           base \
