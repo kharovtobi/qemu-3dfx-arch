@@ -30,20 +30,22 @@ jobs:
             base
             base-devel
             coreutils
-            vim
             git
             grep
             perl
+            rsync
             sed
             unzip
+            vim
             mingw-w64-i686-tools
             mingw-w64-i686-binutils
             mingw-w64-i686-gcc       
 
-     - name: Adding Watcom support
+     - name: Adding watcom support
        shell: msys2 {0}
        run:  |
-         wget https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.xz
+         dir
+         wget -q https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.xz
          mkdir watcom
          tar xf ow-snapshot.tar.xz -C watcom
          export WATCOM=$(pwd)/watcom
@@ -54,12 +56,12 @@ jobs:
      - name: Adding djgpp support
        shell: msys2 {0}
        run: |
-         wget https://github.com/andrewwutw/build-djgpp/releases/download/v3.4/djgpp-mingw-gcc1220.zip
+         dir
+         wget -q https://github.com/andrewwutw/build-djgpp/releases/download/v3.4/djgpp-mingw-gcc1220.zip
          unzip djgpp-mingw-gcc1220.zip
          cp djgpp/i586-pc-msdosdjgpp/bin/dxe* djgpp/bin
          export DJGPP_PREFIX=$(pwd)/djgpp
          export PATH=$(pwd)/djgpp/bin:$PATH
-         export GCC_EXEC_PREFIX=$(pwd)/djgpp/lib/gcc
          export DJDIR=$(pwd)/djgpp/i586-pc-msdosdjgpp
 
      - name: Build 3dfx wrappers
