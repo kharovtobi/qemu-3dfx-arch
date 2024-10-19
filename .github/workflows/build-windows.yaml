@@ -23,11 +23,6 @@ jobs:
        with:
           msystem: UCRT64
      - shell: msys2 {0}
-       name: Update MSYS2
-       run: | 
-         pacman -Syu --noconfirm --needed
-         y
-
      - name: Install dependencies
        run: |
           pacman -Syu --noconfirm --needed \
