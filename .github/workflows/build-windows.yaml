@@ -24,11 +24,11 @@ jobs:
           msystem: UCRT64
       - shell: msys2 {0}
         run: | 
-         pacman -Syu
+         pacman -Syu --noconfirm --needed
 
       - name: Install dependencies
         run: |
-          pacman -Sy \
+          pacman -Sy --noconfirm --needed \
           base \
           base-devel \
           rsync \
@@ -71,4 +71,14 @@ jobs:
           ${MINGW_PACKAGE_PREFIX}-usbredir \
           ${MINGW_PACKAGE_PREFIX}-virglrenderer \
           ${MINGW_PACKAGE_PREFIX}-zlib \
-          ${MINGW_PACKAGE_PREFIX}-zstd \
+          ${MINGW_PACKAGE_PREFIX}-zstd 
+          
+      - name: Checkout repository
+      - uses: actions/checkout@v4
+
+      - name: test
+        run: |
+          dir \
+          uname -a
+
+        
