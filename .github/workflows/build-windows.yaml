@@ -4,7 +4,6 @@ name: Build Windows
 on:
   workflow_dispatch:
 
-
   push:
     branches: [ workflow ]
   pull_request:
@@ -16,8 +15,8 @@ jobs:
      env:
       pkgver: '9.1.0'
       patch:  '00-qemu91x-mesa-glide.patch'
+      
      steps:  
-      - name: Set-up MSYS2
       - uses: msys2/setup-msys2@v2
         with:
           msystem: UCRT64
