@@ -1,3 +1,4 @@
+# Wrapper Disk first then binary i hope 
 name: Build Windows
 
 on:
@@ -15,12 +16,7 @@ jobs:
      env:
       pkgver: '9.1.0'
       patch:  '00-qemu91x-mesa-glide.patch'
-     steps:
-      - name: Checkout repository
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: UCRT64
-          
+     steps:  
 
       - name: Set-up MSYS2
         uses: msys2/setup-msys2@v2
@@ -28,7 +24,51 @@ jobs:
           msystem: UCRT64
       - shell: msys2 {0}
         run: | 
-         uname -a
-          
+         pacman -Syu
 
-
+      - name: Install dependencies
+        run: |
+          pacman -Sy \
+          base \
+          base-devel \
+          rsync \
+          patch \
+          ninja \
+          wget \
+          git \
+          ${MINGW_PACKAGE_PREFIX}-python \
+          ${MINGW_PACKAGE_PREFIX}-python-setuptools \
+          ${MINGW_PACKAGE_PREFIX}-python-distlib \
+          ${MINGW_PACKAGE_PREFIX}-python-sphinx \
+          ${MINGW_PACKAGE_PREFIX}-python-sphinx_rtd_theme \
+          ${MINGW_PACKAGE_PREFIX}-cairo \
+          ${MINGW_PACKAGE_PREFIX}-capstone \
+          ${MINGW_PACKAGE_PREFIX}-curl \
+          ${MINGW_PACKAGE_PREFIX}-dtc \
+          ${MINGW_PACKAGE_PREFIX}-gcc \
+          ${MINGW_PACKAGE_PREFIX}-gdk-pixbuf2 \
+          ${MINGW_PACKAGE_PREFIX}-glib2 \
+          ${MINGW_PACKAGE_PREFIX}-gnutls \
+          ${MINGW_PACKAGE_PREFIX}-gtk3 \
+          ${MINGW_PACKAGE_PREFIX}-libcacard \
+          ${MINGW_PACKAGE_PREFIX}-libepoxy \
+          ${MINGW_PACKAGE_PREFIX}-libnfs \
+          ${MINGW_PACKAGE_PREFIX}-libpng \
+          ${MINGW_PACKAGE_PREFIX}-libslirp \
+          ${MINGW_PACKAGE_PREFIX}-libssh \
+          ${MINGW_PACKAGE_PREFIX}-libusb \
+          ${MINGW_PACKAGE_PREFIX}-libxml2 \
+          ${MINGW_PACKAGE_PREFIX}-lzo2 \
+          ${MINGW_PACKAGE_PREFIX}-meson \
+          ${MINGW_PACKAGE_PREFIX}-ncurses \
+          ${MINGW_PACKAGE_PREFIX}-pixman \
+          ${MINGW_PACKAGE_PREFIX}-pcre2 \
+          ${MINGW_PACKAGE_PREFIX}-SDL2 \
+          ${MINGW_PACKAGE_PREFIX}-SDL2_image \
+          ${MINGW_PACKAGE_PREFIX}-snappy \
+          ${MINGW_PACKAGE_PREFIX}-spice \
+          ${MINGW_PACKAGE_PREFIX}-spice-protocol \
+          ${MINGW_PACKAGE_PREFIX}-usbredir \
+          ${MINGW_PACKAGE_PREFIX}-virglrenderer \
+          ${MINGW_PACKAGE_PREFIX}-zlib \
+          ${MINGW_PACKAGE_PREFIX}-zstd \
