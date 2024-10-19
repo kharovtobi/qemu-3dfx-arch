@@ -52,21 +52,32 @@ jobs:
          export PATH=$WATCOM/binnt64:$WATCOM/bint:$PATH
          export EDPATH=$WATCOM/eddat
          export INCLUDE=$WATCOM/h/nt
+         dir
 
      - name: Adding djgpp support
        shell: msys2 {0}
        run: |
          dir
          wget -q https://github.com/andrewwutw/build-djgpp/releases/download/v3.4/djgpp-mingw-gcc1220.zip
-         unzip djgpp-mingw-gcc1220.zip
+         unzip -q djgpp-mingw-gcc1220.zip
          cp djgpp/i586-pc-msdosdjgpp/bin/dxe* djgpp/bin
          export DJGPP_PREFIX=$(pwd)/djgpp
          export PATH=$(pwd)/djgpp/bin:$PATH
          export DJDIR=$(pwd)/djgpp/i586-pc-msdosdjgpp
+         dir
+         printenv
 
      - name: Build 3dfx wrappers
        shell: msys2 {0}
        run: |
+        export WATCOM=$(pwd)/watcom
+        export PATH=$WATCOM/binnt64:$WATCOM/bint:$PATH
+        export EDPATH=$WATCOM/eddat
+        export INCLUDE=$WATCOM/h/nt
+        export DJGPP_PREFIX=$(pwd)/djgpp
+        export PATH=$(pwd)/djgpp/bin:$PATH
+        export DJDIR=$(pwd)/djgpp/i586-pc-msdosdjgpp
+        printenv
         cd wrappers/3dfx
         mkdir build && cd build
         dir
@@ -76,6 +87,15 @@ jobs:
      - name: Build Mesa wrappers
        shell: msys2 {0}
        run: |
+        export WATCOM=$(pwd)/watcom
+        export PATH=$WATCOM/binnt64:$WATCOM/bint:$PATH
+        export EDPATH=$WATCOM/eddat
+        export INCLUDE=$WATCOM/h/nt
+        export DJGPP_PREFIX=$(pwd)/djgpp
+        export PATH=$(pwd)/djgpp/bin:$PATH
+        export DJDIR=$(pwd)/djgpp/i586-pc-msdosdjgpp
+        printenv
+        cd ../../..
         cd wrappers/mesa
         mkdir build && cd build
         dir
