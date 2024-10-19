@@ -1,16 +1,16 @@
-name: qemu-linux
+name: Build Linux
 
 on:
   workflow_dispatch:
 
 
-  push:
-    branches: [ workflow ]
-  pull_request:
-    branches: [ workflow ]
+#  push:
+#    branches: [ workflow ]
+#  pull_request:
+#    branches: [ workflow ]
 
 jobs:
-  build:
+  Build Linux:
     runs-on: ubuntu-latest
     env:
       pkgver: '9.1.0'
