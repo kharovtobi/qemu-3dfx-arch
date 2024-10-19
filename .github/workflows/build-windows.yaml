@@ -31,6 +31,7 @@ jobs:
             base-devel
             vim
             perl
+            unzip
             coreutils
             mingw-w64-i686-tools
             mingw-w64-i686-binutils
