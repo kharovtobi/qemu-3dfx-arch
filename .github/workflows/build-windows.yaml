@@ -23,7 +23,6 @@ jobs:
        with:
           msystem: MINGW32
      - shell: msys2 {0}
-     - name: Install wrapper dependencies
        run: |
         pacman -Sy --noconfirm --needed \
         base \
