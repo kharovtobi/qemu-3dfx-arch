@@ -1,12 +1,12 @@
-name: Build QEMU binaries in Windows w/ wrappers
+name: Build QEMU binaries in Windows
 
 on:
   workflow_dispatch:
 
-#  push:
-#    branches: [ workflow ]
-#  pull_request:
-#    branches: [ workflow ]
+  push:
+    branches: [ workflow ]
+  pull_request:
+    branches: [ workflow ]
 
 jobs:
 
@@ -72,14 +72,14 @@ jobs:
           mingw-w64-ucrt-x86_64-zlib
           mingw-w64-ucrt-x86_64-zstd
 
-     - name: Preparing Build
+     - name: Preparing build
        shell: msys2 {0}
        run:  |
         wget https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
         tar xf qemu-${{ env.pkgver }}.tar.xz
         cd qemu-${{ env.pkgver }}
         rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa ./hw/
-        patch -p0 -i ../00-qemu91x-mesa-glide.patch
+        patch -p0 -i ../${{ env.patch }}
         bash ../scripts/sign_commit
         cd ../build
 
@@ -88,12 +88,12 @@ jobs:
        shell: msys2 {0}
        run: ../qemu-${{ env.pkgver }}/configure --target-list=i386-softmmu --prefix=/usr/qemu-3dfx --enable-opengl --enable-gtk --enable-gtk-clipboard --enable-sdl --enable-sdl-image --enable-libusb
 
-     - name: Build binary
+     - name: Compile build
        working-directory: ./build
        shell: msys2 {0}
        run: make      
 
-     - name: Installing file
+     - name: Installing build
        working-directory: ./build
        shell: msys2 {0}
        run: 	make DESTDIR=./output install
@@ -104,6 +104,88 @@ jobs:
         name: bin-windows-${{ env.pkgver }}-artifact
         path: ./build/output
 
-        
+   Build-Wrappers:
+            runs-on: ubuntu-latest
+            steps:
+              - name: Checkout repo
+                uses: actions/checkout@v4
+                
+              - name: Install dependencies
+                uses: ConorMacBride/install-package@v1
+                with:
+                  apt: >
+                    binutils-mips-linux-gnu
+                    ninja-build
+                    bsdmainutils
+                    build-essential
+                    libaudiofile-dev
+                    binutils-mingw-w64
+                    libdigest-sha-perl
+                    mingw-w64-tools
+                    libsdl2-dev
+                    libusb-1.0-0-dev
+                    gcc-mingw-w64
+                    g++-mingw-w64-i686
+                    g++-mingw-w64
+                    g++-10-multilib
+                    gcc-10-multilib
+                    gcc-mingw-w64-x86-64-win32-runtime
+                    gcc-mingw-w64-i686
+                    mingw-w64-x86-64-dev
+                    mingw-w64-i686-dev
+                    mingw-w64-common
+                    libx11-dev
+                    libcapstone-dev
+                    pkgconf
+                    python3
+                    git
+
+              - name: Adding optional support
+                run:  |
+                 wget -q https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.xz
+                 wget -q https://github.com/andrewwutw/build-djgpp/releases/download/v3.4/djgpp-linux64-gcc1220.tar.bz2
+                 mkdir watcom
+                 tar xf ow-snapshot.tar.xz -C watcom
+                 tar xf djgpp-linux64-gcc1220.tar.bz2
+                 cp -v djgpp/i586-pc-msdosdjgpp/bin/dxe* djgpp/bin
 
      
+              - name: Compile wrappers
+                run: |
+                  export WATCOM=$(pwd)/watcom
+                  export PATH=$WATCOM/binl64:$WATCOM/binl:$PATH
+                  export EDPATH=$WATCOM/eddat
+                  export INCLUDE=$WATCOM/lh
+                  export DJGPP_PREFIX=$(pwd)/djgpp
+                  export PATH=$(pwd)/djgpp/bin:$PATH
+                  export GCC_EXEC_PREFIX=$(pwd)/djgpp/lib/gcc
+                  export DJDIR=$(pwd)/djgpp/i586-pc-msdosdjgpp
+                  cd wrappers/3dfx
+                  mkdir build && cd build
+                  bash ../../../scripts/conf_wrapper
+                  make
+                  cd ../../mesa
+                  mkdir build && cd build
+                  bash ../../../scripts/conf_wrapper
+                  make
+
+              - name: Installing wrappers
+                working-directory: ./wrappers/iso
+                run: |
+                 mkdir wrapfx
+                 mkdir wrapgl
+                 cp -r ../3dfx/build/* ./wrapfx/
+                 rm -r ./wrapfx/lib* ./wrapfx/Makefile
+                 cp -r ../mesa/build/* ./wrapgl/
+                 rm -r ./wrapgl/Makefile
+                 echo $(git rev-parse HEAD) > commit\ id.txt
+                 cp -r ../texts/readme_nodx.txt readme.txt
+                 mkisofs -JR -V 3DFX-WRAPPERS -o ../../wrappers.iso ../iso
+
+
+              - name: Uploading wrappers
+                uses: actions/upload-artifact@v4
+                with:
+                  name: bin-wrappers-${{ env.pkgver }}-artifact
+                  path: ./wrappers.iso
+                 
