@@ -39,7 +39,6 @@ jobs:
         dir
         bash ../../../scripts/conf-wrapper
         make && make clean
-     - name: Make mesa build dir
 
      - name: Build Mesa wrappers 
        working-directory: ./wrappers/mesa
@@ -49,6 +48,7 @@ jobs:
         dir
         bash ../../../scripts/conf-wrapper
         make && make clean
+        
      - name: Uploading file
        uses: actions/upload-artifact@v4
        with:
