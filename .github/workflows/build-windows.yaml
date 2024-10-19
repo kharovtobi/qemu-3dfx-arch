@@ -17,7 +17,6 @@ jobs:
       pkgver: '9.1.0'
       patch:  '00-qemu91x-mesa-glide.patch'
      steps:  
-
       - name: Set-up MSYS2
         uses: msys2/setup-msys2@v2
       - uses: actions/checkout@v4
