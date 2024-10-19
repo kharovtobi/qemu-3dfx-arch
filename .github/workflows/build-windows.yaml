@@ -76,7 +76,7 @@ jobs:
        shell: msys2 {0}
        run:  |
         wget https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
-        tar xf qemu-${{ env.pkgver }}.tar.xz
+        tar xf qemu-${{ env.pkgver }}.tar.xz --ignore-failed-read --warning=no-file-ignored
         cd qemu-${{ env.pkgver }}
         rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa ./hw/
         patch -p0 -i ../${{ env.patch }}
@@ -114,11 +114,13 @@ jobs:
                 uses: ConorMacBride/install-package@v1
                 with:
                   apt: >
+                    meson
                     binutils-mips-linux-gnu
                     ninja-build
                     bsdmainutils
                     build-essential
                     libaudiofile-dev
+                    binutils-djgpp
                     binutils-mingw-w64
                     libdigest-sha-perl
                     mingw-w64-tools
@@ -155,10 +157,7 @@ jobs:
                   export PATH=$WATCOM/binl64:$WATCOM/binl:$PATH
                   export EDPATH=$WATCOM/eddat
                   export INCLUDE=$WATCOM/lh
-                  export DJGPP_PREFIX=$(pwd)/djgpp
                   export PATH=$(pwd)/djgpp/bin:$PATH
-                  export GCC_EXEC_PREFIX=$(pwd)/djgpp/lib/gcc
-                  export DJDIR=$(pwd)/djgpp/i586-pc-msdosdjgpp
                   cd wrappers/3dfx
                   mkdir build && cd build
                   bash ../../../scripts/conf_wrapper
