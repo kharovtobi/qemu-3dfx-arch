@@ -30,9 +30,10 @@ jobs:
         pacman -Sy --noconfirm --needed \
         base-devel \
         vim \
-        {MINGW_PACKAGE_PREFIX}-tools \
-        {MINGW_PACKAGE_PREFIX}-binutils \
-        {MINGW_PACKAGE_PREFIX}-gcc \
+        perl \
+        mingw-w64-i686-tools \
+        mingw-w64-i686-binutils \
+        mingw-w64-i686-gcc \
         
      - name: Run 3dfx
        uses: msys2/setup-msys2@v2
