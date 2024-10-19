@@ -43,7 +43,6 @@ jobs:
         cd build
         bash ../../../scripts/conf-wrapper
         make && make clean
-
      - name: Build mesa wrappers 
        working-directory: ./wrappers/mesa
        run: |
@@ -52,9 +51,8 @@ jobs:
         cd build
         bash ../../../scripts/conf-wrapper
         make && make clean
-
      - name: Uploading file
-     - uses: actions/upload-artifact@v4
+       uses: actions/upload-artifact@v4
        with:
         name: bin-wrappers-${{ env.pkgver }}-artifact
         path: ./wrappers
