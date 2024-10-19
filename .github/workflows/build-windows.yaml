@@ -24,9 +24,9 @@ jobs:
      - name: Setup MSYS2 (mingw32)
        uses: msys2/setup-msys2@v2
        with:
-          msystem: MINGW32
-          update: true
-          install: >-
+         msystem: MINGW32
+         update: true
+         install: >-
             base
             base-devel
             vim
@@ -37,7 +37,7 @@ jobs:
             mingw-w64-i686-gcc       
 
      - name: Adding Watcom support
-     - shell: msys2 {0}
+       shell: msys2 {0}
        run:  |
          wget https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.xz
          mkdir watcom
@@ -48,7 +48,7 @@ jobs:
          export INCLUDE=$WATCOM/lh
 
      - name: Adding djgpp support
-     - shell: msys2 {0}
+       shell: msys2 {0}
        run: |
          wget https://github.com/andrewwutw/build-djgpp/releases/download/v3.4/djgpp-mingw-gcc1220.zip
          unzip djgpp-mingw-gcc1220.zip
@@ -58,7 +58,7 @@ jobs:
          
         
      - name: Build 3dfx wrappers
-     - shell: msys2 {0}
+       shell: msys2 {0}
        run: |
         cd wrappers/3dfx
         mkdir build && cd build
