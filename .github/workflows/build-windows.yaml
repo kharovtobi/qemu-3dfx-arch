@@ -29,10 +29,13 @@ jobs:
          install: >-
             base
             base-devel
-            vim
-            perl
-            unzip
             coreutils
+            vim
+            git
+            grep
+            perl
+            sed
+            unzip
             mingw-w64-i686-tools
             mingw-w64-i686-binutils
             mingw-w64-i686-gcc       
