@@ -1,0 +1,24 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+
+
+  push:
+    branches: [ workflow ]
+  pull_request:
+    branches: [ workflow ]
+
+jobs:
+   Build-Windows:
+     runs-on: windows-2019
+     env:
+      pkgver: '9.1.0'
+      patch:  '00-qemu91x-mesa-glide.patch'
+     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set-up MSYS2
+        run: pacman -Syu
+
