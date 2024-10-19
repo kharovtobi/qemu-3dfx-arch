@@ -35,8 +35,7 @@ jobs:
         mingw-w64-i686-binutils \
         mingw-w64-i686-gcc \
         
-     - name: Run 3dfx
-     - shell: msys2 {0}
+     - name: Build 3dfx wrappers
        working-directory: ./wrappers/3dfx
        run: |
         dir
@@ -44,6 +43,22 @@ jobs:
         cd build
         bash ../../../scripts/conf-wrapper
         make && make clean
+
+     - name: Build mesa wrappers 
+       working-directory: ./wrappers/mesa
+       run: |
+        dir
+        mkdir build
+        cd build
+        bash ../../../scripts/conf-wrapper
+        make && make clean
+
+     - name: Uploading file
+     - uses: actions/upload-artifact@v4
+       with:
+        name: bin-wrappers-${{ env.pkgver }}-artifact
+        path: ./wrappers
+
         
 
      
