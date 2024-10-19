@@ -1,0 +1,109 @@
+name: Build QEMU binaries in Windows w/ wrappers
+
+on:
+  workflow_dispatch:
+
+#  push:
+#    branches: [ workflow ]
+#  pull_request:
+#    branches: [ workflow ]
+
+jobs:
+
+   
+   Build-Windows:
+   
+     runs-on: windows-2019       
+     env:
+      pkgver: '9.1.0'
+      patch:  '00-qemu91x-mesa-glide.patch'
+      
+     steps:  
+     - name: Checkout repo
+       uses: actions/checkout@v4
+       
+     - name: Setup MSYS2 (ucrt64)
+       uses: msys2/setup-msys2@v2
+       with:
+         msystem: UCRT64
+         update: true
+         install: >-
+          base 
+          base-devel 
+          rsync 
+          patch 
+          ninja 
+          wget 
+          git 
+          mingw-w64-ucrt-x86_64-python
+          mingw-w64-ucrt-x86_64-python-setuptools
+          mingw-w64-ucrt-x86_64-python-distlib
+          mingw-w64-ucrt-x86_64-python-sphinx
+          mingw-w64-ucrt-x86_64-python-sphinx_rtd_theme
+          mingw-w64-ucrt-x86_64-cairo
+          mingw-w64-ucrt-x86_64capstone
+          mingw-w64-ucrt-x86_64-curl
+          mingw-w64-ucrt-x86_64-dtc
+          mingw-w64-ucrt-x86_64-gcc
+          mingw-w64-ucrt-x86_64-gdk-pixbuf2
+          mingw-w64-ucrt-x86_64-glib2
+          mingw-w64-ucrt-x86_64-gnutls
+          mingw-w64-ucrt-x86_64-gtk3
+          mingw-w64-ucrt-x86_64-libcacard
+          mingw-w64-ucrt-x86_64-libepoxy
+          mingw-w64-ucrt-x86_64-libnfs
+          mingw-w64-ucrt-x86_64-libpng
+          mingw-w64-ucrt-x86_64-libslirp
+          mingw-w64-ucrt-x86_64-libssh
+          mingw-w64-ucrt-x86_64-libusb
+          mingw-w64-ucrt-x86_64-libxml2
+          mingw-w64-ucrt-x86_64-lzo2
+          mingw-w64-ucrt-x86_64-meson
+          mingw-w64-ucrt-x86_64-ncurses
+          mingw-w64-ucrt-x86_64-pixman
+          mingw-w64-ucrt-x86_64-pcre2
+          mingw-w64-ucrt-x86_64-SDL2
+          mingw-w64-ucrt-x86_64-SDL2_image
+          mingw-w64-ucrt-x86_64-snappy
+          mingw-w64-ucrt-x86_64-spice
+          mingw-w64-ucrt-x86_64-spice-protocol
+          mingw-w64-ucrt-x86_64-usbredir
+          mingw-w64-ucrt-x86_64-virglrenderer
+          mingw-w64-ucrt-x86_64-zlib
+          mingw-w64-ucrt-x86_64-zstd
+
+     - name: Preparing Build
+       shell: msys2 {0}
+       run:  |
+        wget https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
+        tar xf qemu-${{ env.pkgver }}.tar.xz
+        cd qemu-${{ env.pkgver }}
+        rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa ./hw/
+        patch -p0 -i ../00-qemu91x-mesa-glide.patch
+        bash ../scripts/sign_commit
+        cd ../build
+
+     - name: Configure build
+       working-directory: ./build
+       shell: msys2 {0}
+       run: ../qemu-${{ env.pkgver }}/configure --target-list=i386-softmmu --prefix=/usr/qemu-3dfx --enable-opengl --enable-gtk --enable-gtk-clipboard --enable-sdl --enable-sdl-image --enable-libusb
+
+     - name: Build binary
+       working-directory: ./build
+       shell: msys2 {0}
+       run: make      
+
+     - name: Installing file
+       working-directory: ./build
+       shell: msys2 {0}
+       run: 	make DESTDIR=./output install
+       
+     - name: Uploading file
+       uses: actions/upload-artifact@v4
+       with:
+        name: bin-windows-${{ env.pkgver }}-artifact
+        path: ./build/output
+
+        
+
+     
