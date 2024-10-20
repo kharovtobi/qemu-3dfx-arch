@@ -13,6 +13,7 @@ jobs:
      env:
       pkgver: '9.1.0'
       patch:  '00-qemu91x-mesa-glide.patch'
+      mspkg: 'mingw-w64-x86_64'
       
      steps:  
      - name: Checkout repo
@@ -21,7 +22,7 @@ jobs:
      - name: Setup MSYS2 (ucrt64)
        uses: msys2/setup-msys2@v2
        with:
-         msystem: UCRT64
+         msystem: MINGW64
          update: true
          install: >-
           base 
@@ -31,42 +32,42 @@ jobs:
           ninja 
           wget 
           git 
-          mingw-w64-ucrt-x86_64-python
-          mingw-w64-ucrt-x86_64-python-setuptools
-          mingw-w64-ucrt-x86_64-python-distlib
-          mingw-w64-ucrt-x86_64-python-sphinx
-          mingw-w64-ucrt-x86_64-python-sphinx_rtd_theme
-          mingw-w64-ucrt-x86_64-cairo
-          mingw-w64-ucrt-x86_64-capstone
-          mingw-w64-ucrt-x86_64-curl
-          mingw-w64-ucrt-x86_64-dtc
-          mingw-w64-ucrt-x86_64-gcc
-          mingw-w64-ucrt-x86_64-gdk-pixbuf2
-          mingw-w64-ucrt-x86_64-glib2
-          mingw-w64-ucrt-x86_64-gnutls
-          mingw-w64-ucrt-x86_64-gtk3
-          mingw-w64-ucrt-x86_64-libcacard
-          mingw-w64-ucrt-x86_64-libepoxy
-          mingw-w64-ucrt-x86_64-libnfs
-          mingw-w64-ucrt-x86_64-libpng
-          mingw-w64-ucrt-x86_64-libslirp
-          mingw-w64-ucrt-x86_64-libssh
-          mingw-w64-ucrt-x86_64-libusb
-          mingw-w64-ucrt-x86_64-libxml2
-          mingw-w64-ucrt-x86_64-lzo2
-          mingw-w64-ucrt-x86_64-meson
-          mingw-w64-ucrt-x86_64-ncurses
-          mingw-w64-ucrt-x86_64-pixman
-          mingw-w64-ucrt-x86_64-pcre2
-          mingw-w64-ucrt-x86_64-SDL2
-          mingw-w64-ucrt-x86_64-SDL2_image
-          mingw-w64-ucrt-x86_64-snappy
-          mingw-w64-ucrt-x86_64-spice
-          mingw-w64-ucrt-x86_64-spice-protocol
-          mingw-w64-ucrt-x86_64-usbredir
-          mingw-w64-ucrt-x86_64-virglrenderer
-          mingw-w64-ucrt-x86_64-zlib
-          mingw-w64-ucrt-x86_64-zstd
+          ${{ env.pkgver }}-python
+          ${{ env.pkgver }}-python-setuptools
+          ${{ env.pkgver }}-python-distlib
+          ${{ env.pkgver }}-python-sphinx
+          ${{ env.pkgver }}-python-sphinx_rtd_theme
+          ${{ env.pkgver }}-cairo
+          ${{ env.pkgver }}-capstone
+          ${{ env.pkgver }}-curl
+          ${{ env.pkgver }}-dtc
+          ${{ env.pkgver }}-gcc
+          ${{ env.pkgver }}-gdk-pixbuf2
+          ${{ env.pkgver }}-glib2
+          ${{ env.pkgver }}-gnutls
+          ${{ env.pkgver }}-gtk3
+          ${{ env.pkgver }}-libcacard
+          ${{ env.pkgver }}-libepoxy
+          ${{ env.pkgver }}-libnfs
+          ${{ env.pkgver }}-libpng
+          ${{ env.pkgver }}-libslirp
+          ${{ env.pkgver }}-libssh
+          ${{ env.pkgver }}-libusb
+          ${{ env.pkgver }}-libxml2
+          ${{ env.pkgver }}-lzo2
+          ${{ env.pkgver }}-meson
+          ${{ env.pkgver }}-ncurses
+          ${{ env.pkgver }}-pixman
+          ${{ env.pkgver }}-pcre2
+          ${{ env.pkgver }}-SDL2
+          ${{ env.pkgver }}-SDL2_image
+          ${{ env.pkgver }}-snappy
+          ${{ env.pkgver }}-spice
+          ${{ env.pkgver }}-spice-protocol
+          ${{ env.pkgver }}-usbredir
+          ${{ env.pkgver }}-virglrenderer
+          ${{ env.pkgver }}-zlib
+          ${{ env.pkgver }}-zstd
 
      - name: Extracting build
        continue-on-error: true
