@@ -110,7 +110,7 @@ jobs:
      - name: Uploading build
        uses: actions/upload-artifact@v4
        with:
-        name: bin-windows-${{ env.pkgver }}-${GITHUB_SHA::6}-artifact
+        name: bin-windows-${{ env.pkgver }}-${GITHUB_SHA:0:7}-artifact
         path: ./build/output/a/_temp/msys64/usr
 
    Build-Wrappers:
@@ -197,6 +197,6 @@ jobs:
               - name: Uploading wrappers
                 uses: actions/upload-artifact@v4
                 with:
-                  name: wrappers-${{ env.pkgver }}-${GITHUB_SHA::6}-artifact
+                  name: wrappers-${{ env.pkgver }}-${GITHUB_SHA:0:7}-artifact
                   path: ./wrappers
                  
