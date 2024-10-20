@@ -73,12 +73,15 @@ jobs:
           mingw-w64-ucrt-x86_64-zlib
           mingw-w64-ucrt-x86_64-zstd
 
-     - name: Preparing build
-       if: ${{ always() }}
+     - name: Extracting build
+       continue-on-error: true
        shell: msys2 {0}
        run:  |
-        wget https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
+        wget -q https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
         tar xf qemu-${{ env.pkgver }}.tar.xz 
+     - name: Patching build
+       shell: msys2 {0}
+       run:  |
         cd qemu-${{ env.pkgver }}
         rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa ./hw/
         patch -p0 -i ../${{ env.patch }}
@@ -142,6 +145,7 @@ jobs:
                     mingw-w64-common
                     libx11-dev
                     libcapstone-dev
+                    flex
                     pkgconf
                     python3
                     git
@@ -166,13 +170,11 @@ jobs:
                   cd wrappers/3dfx
                   mkdir build && cd build
                   bash ../../../scripts/conf_wrapper
-                  make 
-                  make clean
+                  make && make clean
                   cd ../../mesa
                   mkdir build && cd build
                   bash ../../../scripts/conf_wrapper
-                  make
-                  make clean
+                  make && make clean
 
               - name: Installing wrappers
                 working-directory: ./wrappers/iso
