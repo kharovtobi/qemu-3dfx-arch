@@ -80,9 +80,9 @@ jobs:
         wget -q https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
         tar xf qemu-${{ env.pkgver }}.tar.xz 
      - name: Patching build
+       working-directory: ./qemu-${{ env.pkgver }}
        shell: msys2 {0}
        run:  |
-        cd qemu-${{ env.pkgver }}
         rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
         patch -p0 -i ../${{ env.patch }}
         bash ../scripts/sign_commit
@@ -132,6 +132,8 @@ jobs:
                     mingw-w64-tools
                     libsdl2-dev
                     libusb-1.0-0-dev
+                    libfl2
+                    libfl-dev
                     g++-mingw-w64-i686
                     g++-10-multilib
                     gcc-10-multilib
@@ -142,7 +144,6 @@ jobs:
                     mingw-w64-common
                     libx11-dev
                     libcapstone-dev
-                    flex
                     pkgconf
                     python3
                     git
