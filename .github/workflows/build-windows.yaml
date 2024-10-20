@@ -1,4 +1,5 @@
-#windows tar symlinks help
+# Default windows YAML 
+# Line wrap recommended
 name: Build QEMU-3dfx binaries
 
 on:
@@ -79,6 +80,7 @@ jobs:
        run:  |
         wget -q https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
         tar xf qemu-${{ env.pkgver }}.tar.xz 
+        echo "Don't mind the error, It's a windows feature"
      - name: Patching build
        shell: msys2 {0}
        run:  |
@@ -90,7 +92,7 @@ jobs:
      - name: Configure build
        working-directory: ./build
        shell: msys2 {0}
-       run: ../qemu-${{ env.pkgver }}/configure --disable-werror --target-list=i386-softmmu --prefix=/usr/qemu-3dfx --enable-opengl --enable-whpx --enable-gtk --enable-gtk-clipboard --enable-sdl --enable-sdl-image --enable-libusb
+       run: ../qemu-${{ env.pkgver }}/configure --disable-werror --target-list=i386-softmmu --prefix=/usr --enable-opengl --enable-whpx --enable-gtk --enable-gtk-clipboard --enable-sdl --enable-sdl-image --enable-libusb
 
      - name: Compile build
        working-directory: ./build
@@ -100,13 +102,16 @@ jobs:
      - name: Installing build
        working-directory: ./build
        shell: msys2 {0}
-       run: 	make DESTDIR=./output install
+       run: |
+        make DESTDIR=./output install
+        echo "Finished build at $(date)"
+
        
      - name: Uploading build
        uses: actions/upload-artifact@v4
        with:
-        name: bin-windows-${{ env.pkgver }}-artifact
-        path: ./build/output
+        name: bin-windows-${{ env.pkgver }}-${GITHUB_SHA::6}-artifact
+        path: ./build/output/a/_temp/msys64/usr
 
    Build-Wrappers:
             runs-on: ubuntu-latest
@@ -186,11 +191,12 @@ jobs:
                  echo $(git rev-parse HEAD) > commit\ id.txt
                  cp -r ../texts/readme_nodx.txt readme.txt
                  mkisofs -JR -V 3DFX-WRAPPERS -o ../output/wrappers.iso ../iso
+                 echo "Finished build at $(date)"
 
 
               - name: Uploading wrappers
                 uses: actions/upload-artifact@v4
                 with:
-                  name: bin-wrappers-${{ env.pkgver }}-artifact
+                  name: wrappers-${{ env.pkgver }}-${GITHUB_SHA::6}-artifact
                   path: ./wrappers
                  
