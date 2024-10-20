@@ -80,13 +80,12 @@ jobs:
         wget -q https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
         tar xf qemu-${{ env.pkgver }}.tar.xz 
      - name: Patching build
-       working-directory: ./qemu-${{ env.pkgver }}
        shell: msys2 {0}
        run:  |
-        rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
+        rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa qemu-${{ env.pkgver }}/hw/
+        cd qemu-${{ env.pkgver }}
         patch -p0 -i ../${{ env.patch }}
         bash ../scripts/sign_commit
-        cd ../build
 
      - name: Configure build
        working-directory: ./build
@@ -96,7 +95,7 @@ jobs:
      - name: Compile build
        working-directory: ./build
        shell: msys2 {0}
-       run: make      
+       run: make -j2   
 
      - name: Installing build
        working-directory: ./build
