@@ -19,7 +19,7 @@ jobs:
      - name: Checkout repo
        uses: actions/checkout@v4
        
-     - name: Setup MSYS2 (ucrt64)
+     - name: Setup MSYS2
        uses: msys2/setup-msys2@v2
        with:
          msystem: MINGW64
@@ -32,42 +32,42 @@ jobs:
           ninja 
           wget 
           git 
-          ${{ env.pkgver }}-python
-          ${{ env.pkgver }}-python-setuptools
-          ${{ env.pkgver }}-python-distlib
-          ${{ env.pkgver }}-python-sphinx
-          ${{ env.pkgver }}-python-sphinx_rtd_theme
-          ${{ env.pkgver }}-cairo
-          ${{ env.pkgver }}-capstone
-          ${{ env.pkgver }}-curl
-          ${{ env.pkgver }}-dtc
-          ${{ env.pkgver }}-gcc
-          ${{ env.pkgver }}-gdk-pixbuf2
-          ${{ env.pkgver }}-glib2
-          ${{ env.pkgver }}-gnutls
-          ${{ env.pkgver }}-gtk3
-          ${{ env.pkgver }}-libcacard
-          ${{ env.pkgver }}-libepoxy
-          ${{ env.pkgver }}-libnfs
-          ${{ env.pkgver }}-libpng
-          ${{ env.pkgver }}-libslirp
-          ${{ env.pkgver }}-libssh
-          ${{ env.pkgver }}-libusb
-          ${{ env.pkgver }}-libxml2
-          ${{ env.pkgver }}-lzo2
-          ${{ env.pkgver }}-meson
-          ${{ env.pkgver }}-ncurses
-          ${{ env.pkgver }}-pixman
-          ${{ env.pkgver }}-pcre2
-          ${{ env.pkgver }}-SDL2
-          ${{ env.pkgver }}-SDL2_image
-          ${{ env.pkgver }}-snappy
-          ${{ env.pkgver }}-spice
-          ${{ env.pkgver }}-spice-protocol
-          ${{ env.pkgver }}-usbredir
-          ${{ env.pkgver }}-virglrenderer
-          ${{ env.pkgver }}-zlib
-          ${{ env.pkgver }}-zstd
+          ${{ env.mspkg }}-python
+          ${{ env.mspkg }}-python-setuptools
+          ${{ env.mspkg }}-python-distlib
+          ${{ env.mspkg }}-python-sphinx
+          ${{ env.mspkg }}-python-sphinx_rtd_theme
+          ${{ env.mspkg }}-cairo
+          ${{ env.mspkg }}-capstone
+          ${{ env.mspkg }}-curl
+          ${{ env.mspkg }}-dtc
+          ${{ env.mspkg }}-gcc
+          ${{ env.mspkg }}-gdk-pixbuf2
+          ${{ env.mspkg }}-glib2
+          ${{ env.mspkg }}-gnutls
+          ${{ env.mspkg }}-gtk3
+          ${{ env.mspkg }}-libcacard
+          ${{ env.mspkg }}-libepoxy
+          ${{ env.mspkg }}-libnfs
+          ${{ env.mspkg }}-libpng
+          ${{ env.mspkg }}-libslirp
+          ${{ env.mspkg }}-libssh
+          ${{ env.mspkg }}-libusb
+          ${{ env.mspkg }}-libxml2
+          ${{ env.mspkg }}-lzo2
+          ${{ env.mspkg }}-meson
+          ${{ env.mspkg }}-ncurses
+          ${{ env.mspkg }}-pixman
+          ${{ env.mspkg }}-pcre2
+          ${{ env.mspkg }}-SDL2
+          ${{ env.mspkg }}-SDL2_image
+          ${{ env.mspkg }}-snappy
+          ${{ env.mspkg }}-spice
+          ${{ env.mspkg }}-spice-protocol
+          ${{ env.mspkg }}-usbredir
+          ${{ env.mspkg }}-virglrenderer
+          ${{ env.mspkg }}-zlib
+          ${{ env.mspkg }}-zstd
 
      - name: Extracting build
        continue-on-error: true
