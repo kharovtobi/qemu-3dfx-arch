@@ -1,0 +1,215 @@
+# Default windows YAML 
+# Line wrap recommended
+# Don't forget to change variables every QEMU update!
+name: Build QEMU-3dfx binaries 
+
+on:
+  workflow_dispatch:
+  
+jobs:
+   Build-Windows:
+   
+     runs-on: windows-2019       
+     env:
+      pkgver: '9.1.0'
+      patch:  '00-qemu91x-mesa-glide.patch'
+      
+     steps:  
+     - name: Checkout repo
+       uses: actions/checkout@v4
+       
+     - name: Setup MSYS2 (ucrt64)
+       uses: msys2/setup-msys2@v2
+       with:
+         msystem: UCRT64
+         update: true
+         install: >-
+          base 
+          base-devel 
+          rsync 
+          patch 
+          ninja 
+          wget 
+          git 
+          mingw-w64-ucrt-x86_64-python
+          mingw-w64-ucrt-x86_64-python-setuptools
+          mingw-w64-ucrt-x86_64-python-distlib
+          mingw-w64-ucrt-x86_64-python-sphinx
+          mingw-w64-ucrt-x86_64-python-sphinx_rtd_theme
+          mingw-w64-ucrt-x86_64-cairo
+          mingw-w64-ucrt-x86_64-capstone
+          mingw-w64-ucrt-x86_64-curl
+          mingw-w64-ucrt-x86_64-dtc
+          mingw-w64-ucrt-x86_64-gcc
+          mingw-w64-ucrt-x86_64-gdk-pixbuf2
+          mingw-w64-ucrt-x86_64-glib2
+          mingw-w64-ucrt-x86_64-gnutls
+          mingw-w64-ucrt-x86_64-gtk3
+          mingw-w64-ucrt-x86_64-libcacard
+          mingw-w64-ucrt-x86_64-libepoxy
+          mingw-w64-ucrt-x86_64-libnfs
+          mingw-w64-ucrt-x86_64-libpng
+          mingw-w64-ucrt-x86_64-libslirp
+          mingw-w64-ucrt-x86_64-libssh
+          mingw-w64-ucrt-x86_64-libusb
+          mingw-w64-ucrt-x86_64-libxml2
+          mingw-w64-ucrt-x86_64-lzo2
+          mingw-w64-ucrt-x86_64-meson
+          mingw-w64-ucrt-x86_64-ncurses
+          mingw-w64-ucrt-x86_64-pixman
+          mingw-w64-ucrt-x86_64-pcre2
+          mingw-w64-ucrt-x86_64-SDL2
+          mingw-w64-ucrt-x86_64-SDL2_image
+          mingw-w64-ucrt-x86_64-snappy
+          mingw-w64-ucrt-x86_64-spice
+          mingw-w64-ucrt-x86_64-spice-protocol
+          mingw-w64-ucrt-x86_64-usbredir
+          mingw-w64-ucrt-x86_64-virglrenderer
+          mingw-w64-ucrt-x86_64-zlib
+          mingw-w64-ucrt-x86_64-zstd
+
+     - name: Extracting build
+       continue-on-error: true
+       shell: msys2 {0}
+       run:  |
+        echo "Downloading src"
+        wget -q https://download.qemu.org/qemu-${{ env.pkgver }}.tar.xz
+        echo "Extracting src"
+        tar xf qemu-${{ env.pkgver }}.tar.xz 
+        echo "Don't mind the error, It's a windows feature"
+        
+     - name: Patching build
+       shell: msys2 {0}
+       run:  |
+        echo "Adding files to src"
+        rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa qemu-${{ env.pkgver }}/hw/
+        cd qemu-${{ env.pkgver }}
+        echo "Patching files to src"
+        patch -p0 -i ../${{ env.patch }}
+        echo "Signing commit id to src"
+        bash ../scripts/sign_commit
+
+     - name: Configure build
+       working-directory: ./build
+       shell: msys2 {0}
+       run: |
+        echo "Configuring build"
+        ../qemu-${{ env.pkgver }}/configure --disable-werror --target-list=i386-softmmu --prefix=/usr --enable-opengl --enable-whpx --enable-gtk --enable-gtk-clipboard --enable-sdl --enable-sdl-image --enable-libusb
+
+     - name: Compile build
+       working-directory: ./build
+       shell: msys2 {0}
+       run: |
+        echo "Compiling Build"
+        make -j2   
+
+     - name: Installing build
+       working-directory: ./build
+       shell: msys2 {0}
+       run: |
+        echo "Installing build to output"
+        make DESTDIR=./output install
+        echo "Finished build at $(date)"
+
+       
+     - name: Uploading build
+       uses: actions/upload-artifact@v4
+       with:
+        name: bin-windows-${{ env.pkgver }}-artifact
+        path: ./build/output/a/_temp/msys64/usr
+
+   Build-Wrappers:
+            runs-on: ubuntu-latest
+            env:
+             pkgver: '9.1.0'
+            steps:
+              - name: Checkout repo
+                uses: actions/checkout@v4
+                
+              - name: Install dependencies
+                uses: ConorMacBride/install-package@v1
+                with:
+                  apt: >
+                    meson
+                    binutils-mips-linux-gnu
+                    ninja-build
+                    bsdmainutils
+                    build-essential
+                    libaudiofile-dev
+                    binutils-mingw-w64-i686
+                    libdigest-sha-perl
+                    mingw-w64-tools
+                    libsdl2-dev
+                    libusb-1.0-0-dev
+                    libfl2
+                    libfl-dev
+                    g++-mingw-w64-i686
+                    g++-10-multilib
+                    gcc-10-multilib
+                    gcc-mingw-w64-i686-win32-runtime
+                    g++-mingw-w64-i686-win32
+                    gcc-mingw-w64-i686
+                    mingw-w64-i686-dev
+                    mingw-w64-common
+                    libx11-dev
+                    libcapstone-dev
+                    pkgconf
+                    python3
+                    git
+                    genisoimage
+
+              - name: Adding optional support
+                run:  |
+                 echo "Downloading watcom"
+                 wget -q https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.xz
+                 echo "Downloading djgpp"
+                 wget -q https://github.com/andrewwutw/build-djgpp/releases/download/v3.4/djgpp-linux64-gcc1220.tar.bz2
+                 mkdir watcom
+                 echo "Extracting watcom"
+                 tar xf ow-snapshot.tar.xz -C watcom
+                 echo "Extracting djgpp"
+                 tar xf djgpp-linux64-gcc1220.tar.bz2
+                 cp -v djgpp/i586-pc-msdosdjgpp/bin/dxe* djgpp/bin
+
+              - name: Compile wrappers
+                run: |
+                  echo "Adding Enviromental Variables"
+                  export WATCOM=$(pwd)/watcom
+                  export PATH=$WATCOM/binl64:$WATCOM/binl:$PATH
+                  export EDPATH=$WATCOM/eddat
+                  export INCLUDE=$WATCOM/lh
+                  export PATH=$(pwd)/djgpp/bin:$PATH
+                  echo "Compiling 3dfx wrappers"
+                  cd wrappers/3dfx
+                  mkdir build && cd build
+                  bash ../../../scripts/conf_wrapper
+                  make && make clean
+                  echo "Compiling Mesa wrappers"
+                  cd ../../mesa
+                  mkdir build && cd build
+                  bash ../../../scripts/conf_wrapper
+                  make && make clean
+
+              - name: Installing wrappers
+                working-directory: ./wrappers/iso
+                run: |
+                 echo "Making Wrapper Disk"
+                 mkdir wrapfx
+                 mkdir wrapgl
+                 mkdir ../output
+                 cp -r ../3dfx/build/* ./wrapfx/
+                 rm -r ./wrapfx/lib* ./wrapfx/Makefile
+                 cp -r ../mesa/build/* ./wrapgl/
+                 rm -r ./wrapgl/Makefile
+                 echo $(git rev-parse HEAD) > commit\ id.txt
+                 cp -r ../texts/readme_nodx.txt readme.txt
+                 mkisofs -JR -V 3DFX-WRAPPERS -o ../output/wrappers.iso ../iso
+                 echo "Finished build at $(date)"
+
+
+              - name: Uploading wrappers
+                uses: actions/upload-artifact@v4
+                with:
+                  name: wrappers-${{ env.pkgver }}-artifact
+                  path: ./wrappers
+                  
