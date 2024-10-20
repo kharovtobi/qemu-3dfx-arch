@@ -1,5 +1,6 @@
 # Default windows YAML 
 # Line wrap recommended
+# Don't forget to change variables every QEMU update!
 name: Build QEMU-3dfx binaries
 
 on:
@@ -110,7 +111,7 @@ jobs:
      - name: Uploading build
        uses: actions/upload-artifact@v4
        with:
-        name: bin-windows-${{ env.pkgver }}-${GITHUB_SHA:0:7}-artifact
+        name: bin-windows-${{ env.pkgver }}-artifact
         path: ./build/output/a/_temp/msys64/usr
 
    Build-Wrappers:
@@ -197,6 +198,6 @@ jobs:
               - name: Uploading wrappers
                 uses: actions/upload-artifact@v4
                 with:
-                  name: wrappers-${{ env.pkgver }}-${GITHUB_SHA:0:7}-artifact
+                  name: wrappers-${{ env.pkgver }}-artifact
                   path: ./wrappers
                  
