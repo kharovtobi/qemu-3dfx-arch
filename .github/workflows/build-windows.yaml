@@ -83,7 +83,7 @@ jobs:
        shell: msys2 {0}
        run:  |
         cd qemu-${{ env.pkgver }}
-        rsync -rv qemu-0/hw/3dfx qemu-1/hw/mesa ./hw/
+        rsync -rv ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
         patch -p0 -i ../${{ env.patch }}
         bash ../scripts/sign_commit
         cd ../build
@@ -127,20 +127,17 @@ jobs:
                     bsdmainutils
                     build-essential
                     libaudiofile-dev
-                    binutils-djgpp
-                    binutils-mingw-w64
+                    binutils-mingw-w64-i686
                     libdigest-sha-perl
                     mingw-w64-tools
                     libsdl2-dev
                     libusb-1.0-0-dev
-                    gcc-mingw-w64
                     g++-mingw-w64-i686
-                    g++-mingw-w64
                     g++-10-multilib
                     gcc-10-multilib
-                    gcc-mingw-w64-x86-64-win32-runtime
+                    gcc-mingw-w64-i686-win32-runtime
+                    g++-mingw-w64-i686-win32
                     gcc-mingw-w64-i686
-                    mingw-w64-x86-64-dev
                     mingw-w64-i686-dev
                     mingw-w64-common
                     libx11-dev
