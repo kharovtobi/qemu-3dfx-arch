@@ -25,13 +25,16 @@ Witness, experience and share your thoughts on modern CPU/GPU prowess for retro 
 ## Downloading QEMU
 (https://github.com/kharovtobi/qemu-3dfx/releases)
 
-This includes Binaries, Disks and PKGBUILDS
+This includes Binaries and PKGBUILD
 
-`bin-linux` for Linux
+`qemu-3dfx-arch-*-pkg.tar.zst` for binary packages for Arch Linux
+
+`bin-linux` for Linux (DEPRECATED!)
 
 `bin-windows` for Windows
+
 ## Building QEMU
-There are two ways to build this repo. While this is repo is used for Arch Linux, It can also build on other OS like Windows 10 with MSYS2. It may not be supported, yet.
+There are two ways to build this repo. While this is repo is used for Arch Linux, It can also build on other OS like Windows 10 with MSYS2 too. MINGW64 is recommended as compiling wih UCRT64 may have segmentation fault when using `-boot` command
 
 **Convenience Way:**
 This way is simple. Just download the PKGBUILD from GitHub. (Arch-Based distributions)
@@ -42,8 +45,10 @@ This way is simple. Just download the PKGBUILD from GitHub. (Arch-Based distribu
     $ makepkg -si
 
 - This scripts builds it for you to install into your system.
-- Default PKGBUILD compiles kjliew's repository!
+- Default PKGBUILD compiles kjliew's repository via AUR!
+- if you want to use my repository, rename `PKGBUILD.arch` to `PKGBUILD`.
 - Chroot is recommended! for more details, Go to https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
+
 
 **Traditional Way:**
 This way is basically the same, But less tedious and compiles only the essentials, making it much faster. (Any operating systems)
