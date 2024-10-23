@@ -45,7 +45,7 @@ This way is simple. Just download the PKGBUILD from GitHub. (Arch-Based distribu
     $ makepkg -si
 
 - This scripts builds it for you to install into your system.
-- Default PKGBUILD compiles kjliew's repository via AUR!
+- Default PKGBUILD compiles kjliew's repository!
 - if you want to use my repository, rename `PKGBUILD.arch` to `PKGBUILD`.
 - Chroot is recommended! for more details, Go to https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
 
