@@ -13,8 +13,9 @@ For more info. Refer to the original repo
     bin/disks/fd.ima     - Windows 9x Floppy disk with some tools included
 ## Patch
     00-qemu91x-mesa-glide.patch - Patch for QEMU version 9.1.x (MESA & Glide)
-    01-qemu90x-mesa-glide.patch - Patch for QEMU version 9.0.x (MESA & Glide)
-    02-qemu82x-mesa-glide.patch - Patch for QEMU version 8.2.x (MESA & Glide)
+    00-qemu82x-mesa-glide.patch - Patch for QEMU version 8.2.x (MESA & Glide)
+    01-qemu72x-mesa-glide.patch - Patch for QEMU version 7.2.x (MESA & Glide)
+    02-qemu620-mesa-glide.patch - Patch for QEMU version 6.2.0 (MESA & Glide)
 ## QEMU Windows Guests Glide/OpenGL/Direct3D Acceleration
 Witness, experience and share your thoughts on modern CPU/GPU prowess for retro Windows games on Apple Silicon macOS, Windows 10/11 and modern Linux. Most games can be installed and played in pristine condition without the hassle of hunting down unofficial, fan-made patches to play them on Windows 10/later or modern Linux/Wine. And now it's updated for rolling release and added some tools and dlls i copied on the internet to make the experience better (as long i have free time).
 - Original repository ( https://github.com/kjliew/qemu-3dfx)
@@ -24,7 +25,7 @@ Witness, experience and share your thoughts on modern CPU/GPU prowess for retro 
 ## Downloading QEMU
 (https://github.com/kharovtobi/qemu-3dfx/releases)
 
-This includes binaries, Disks and PKGBUILDS
+This includes Binaries, Disks and PKGBUILDS
 
 `bin-linux` for Linux
 
@@ -53,14 +54,14 @@ Simple guide to apply the patch:<br>
     $ mkdir ~/myqemu && cd ~/myqemu
     $ git clone https://github.com/kharovtobi/qemu-3dfx.git
     $ cd qemu-3dfx
-    $ wget https://download.qemu.org/qemu-9.1.0.tar.xz
-    $ tar xf qemu-9.1.0.tar.xz
-    $ cd qemu-9.1.0
+    $ wget https://download.qemu.org/qemu-9.1.1.tar.xz
+    $ tar xf qemu-9.1.1.tar.xz
+    $ cd qemu-9.1.1
     $ rsync -r ../qemu-0/hw/3dfx ../qemu-1/hw/mesa ./hw/
     $ patch -p0 -i ../00-qemu91x-mesa-glide.patch
     $ bash ../scripts/sign_commit
     $ mkdir ../build && cd ../build
-    $ ../qemu-9.1.0/configure --target-list="i386-softmmu"
+    $ ../qemu-9.1.1/configure --target-list="i386-softmmu"
     $ make
 
 - All patch hunks must be successful in order for the binary to run properly.

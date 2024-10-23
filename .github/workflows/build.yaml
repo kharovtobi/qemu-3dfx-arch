@@ -1,4 +1,4 @@
-# Default windows YAML 
+# Default YAML
 # Line wrap recommended
 # Don't forget to change variables every QEMU update!
 name: Build QEMU-3dfx binaries 
@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
   
 jobs:
-   Build-Windows:
+   Windows:
    
      runs-on: windows-2019       
      env:
-      pkgver: '9.1.0'
+      pkgver: '9.1.1'
       patch:  '00-qemu91x-mesa-glide.patch'
       mspkg: 'mingw-w64-x86_64'
       
@@ -119,10 +119,10 @@ jobs:
         name: bin-windows-${{ env.pkgver }}-artifact
         path: ./build/output/a/_temp/msys64/usr
 
-   Build-Wrappers:
+   Wrappers:
             runs-on: ubuntu-latest
             env:
-             pkgver: '9.1.0'
+             pkgver: '9.1.1'
             steps:
               - name: Checkout repo
                 uses: actions/checkout@v4
@@ -197,14 +197,13 @@ jobs:
                  echo "Making Wrapper Disk"
                  mkdir wrapfx
                  mkdir wrapgl
-                 mkdir ../output
                  cp -r ../3dfx/build/* ./wrapfx/
                  rm -r ./wrapfx/lib* ./wrapfx/Makefile
                  cp -r ../mesa/build/* ./wrapgl/
                  rm -r ./wrapgl/Makefile
                  echo $(git rev-parse HEAD) > commit\ id.txt
                  cp -r ../texts/readme_nodx.txt readme.txt
-                 mkisofs -JR -V 3DFX-WRAPPERS -o ../output/wrappers.iso ../iso
+                 mkisofs -JR -V 3DFX-WRAPPERS -o ../wrappers.iso ../iso
                  echo "Finished build at $(date)"
 
 
