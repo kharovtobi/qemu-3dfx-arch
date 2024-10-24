@@ -112,7 +112,6 @@ jobs:
         make DESTDIR=./output install
         echo "Finished build at $(date)"
 
-       
      - name: Uploading build
        uses: actions/upload-artifact@v4
        with:
@@ -201,15 +200,14 @@ jobs:
                  rm -r ./wrapfx/lib* ./wrapfx/Makefile
                  cp -r ../mesa/build/* ./wrapgl/
                  rm -r ./wrapgl/Makefile
-                 echo $(git rev-parse HEAD) > commit\ id.txt
-                 cp -r ../texts/readme_nodx.txt readme.txt
+                 echo $(git rev-parse HEAD) | sed 's/$'"/`echo \\\r`/" > commit\ id.txt
+                 cat ../texts/readme_nodx.txt | sed 's/$'"/`echo \\\r`/" > license.txt
+                 cat ../texts/LICENSE | sed 's/$'"/`echo \\\r`/" > readme.txt
                  mkisofs -JR -V 3DFX-WRAPPERS -o ../wrappers.iso ../iso
                  echo "Finished build at $(date)"
-
 
               - name: Uploading wrappers
                 uses: actions/upload-artifact@v4
                 with:
                   name: wrappers-${{ env.pkgver }}-artifact
                   path: ./wrappers
-                  

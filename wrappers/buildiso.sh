@@ -20,7 +20,8 @@ cp -rf $FXBDIR/* $ISO/wrapfx/
 rm -rf $ISO/wrapfx/lib* $ISO/wrapfx/Makefile
 cp -f $MSBDIR/* $ISO/wrapgl/
 rm -f $ISO/wrapgl/Makefile
-cp -f $TXTDIR/LICENSE $ISO/license.txt
+cat $TXTDIR/readme_nodx.txt | sed 's/$'"/`echo \\\r`/" > $ISO/readme.txt
+cat $TXTDIR/LICENSE | sed 's/$'"/`echo \\\r`/" > $ISO/license.txt
 
 }
 
@@ -95,10 +96,8 @@ function kjwine {
 
     echo "Installing optional wrappers"
     cp -rf $KJISO/win32/wine $ISO/
-    cp -f $TXTDIR/readme_kjwine.txt $ISO/readme.txt
-    for f in $ISO/wine/*/build-timestamp; do
-        mv -- "$f" "${f%}.txt"
-    done
+    cat $TXTDIR/readme_kjwine.txt | sed 's/$'"/`echo \\\r`/" > $ISO/readme.txt
+    rm -rf $ISO/wine/*/build-timestamp
     rm -rf $KJISO
     rm -f $ISO/wine/wine-get
 }
@@ -120,8 +119,7 @@ function aiwineinstall {
     mkdir -p $ISO/wine
     unzip wined3d-$D3DVERN.zip -d $ISO/wine
     mv -f  $ISO/wine/wined3d $ISO/wine/$D3DVERN
-    cp -f $TXTDIR/readme_aiwine.txt $ISO/readme.txt
-}
+    cat $TXTDIR/readme_aiwine.txt | sed 's/$'"/`echo \\\r`/" > $ISO/readme.txt
 
 
 # Function to handle JHRobotics's wine libraries
@@ -142,10 +140,10 @@ function jhwineinstall {
     mkdir -p $ISO/wine/mmx $ISO/wine/sse3
     unzip mmx-$NXVER.zip -d $ISO/wine/mmx
     unzip sse3-$NXVER.zip -d $ISO/wine/sse3
-    cp -f $TXTDIR/readme_jhwine.txt $ISO/readme.txt
+    cat $TXTDIR/readme_jhwine.txt | sed 's/$'"/`echo \\\r`/" > $ISO/readme.txt
 }
 
-# Function to download wglgears if unavailable
+# Function to download wglgears if there is no testing application
 function gearinstall {
 if [ -f "$MSBDIR/wglgears.exe" ] || [ -f "$MSBDIR/wgltest.exe" ] || [ -f "$ISO/wrapgl/wglgears.exe" ]; then
         echo "wglgears or wgltest found!"
@@ -158,7 +156,7 @@ fi
 # Function to add commit ID
 function commit {
     echo "Adding commit ID"
-    echo $(git rev-parse HEAD) > $ISO/commit\ id.txt
+    echo $(git rev-parse HEAD) | sed 's/$'"/`echo \\\r`/" > $ISO/commit\ id.txt
 
 }
 
