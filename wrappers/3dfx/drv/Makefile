@@ -19,4 +19,4 @@ fxptl.sys: fxptl.xxd
 	@xxd -r $< ../$(OUTDIR)/$@
 
 shasum: shasum.txt
-	@shasum ../$(OUTDIR)/fxmemmap.vxd ../$(OUTDIR)/fxptl.sys | sed "s/.\.\.\/$(OUTDIR)\///" | diff - $<
+	@diff -w -B $< <(shasum ../$(OUTDIR)/fxmemmap.vxd ../$(OUTDIR)/fxptl.sys | sed "s/.\.\.\/$(OUTDIR)\///")
