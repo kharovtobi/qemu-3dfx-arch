@@ -167,8 +167,8 @@ jobs:
         =================================================
         GitHub Actions Artifact Build
         Version ${{ env.pkgver }}
-        Branch ${{ env.branch }}
-        Built using ${MSYSTEM} 
+        ${{ env.branch }} Branch
+        Built using ${MSYSTEM}
         EOF
         unix2dos version.txt build-timestamp.txt
         echo "Finished build at $(date)"
@@ -337,8 +337,8 @@ jobs:
         =================================================
         GitHub Actions Artifact Build
         Version ${{ env.pkgver }}
-        Branch ${{ env.branch }}
-        Built using ${MSYSTEM} 
+        ${{ env.branch }} Branch
+        Built using ${MSYSTEM}
         EOF
         unix2dos version.txt build-timestamp.txt 
         echo "Finished build at $(date)"
