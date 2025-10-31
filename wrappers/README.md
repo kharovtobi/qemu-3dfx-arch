@@ -13,7 +13,7 @@ This folder contains the source codes for wrappers that make pass-through possib
     
 ## Building Guest Wrappers
 
-**Requirements:**
+### Requirements
 
 - `base-devel` (make, sed, xxd etc.)
 - `gendef, shasum`
@@ -25,7 +25,7 @@ If you have Watcom installed, run command first
 
     source /opt/watcom/owsetenv.sh
     
-**Building**
+### Building
 
     cd ~/myqemu/qemu-3dfx/wrappers/3dfx
     mkdir build && cd build
@@ -45,13 +45,13 @@ Refer to [qemu-xtra Readme](https://github.com/kharovtobi/qemu-xtra/blob/master/
 
 ## Packaging Guest Wrappers
 
-**Requirements**
+### Requirements
 
 - `git` for stamping commit ID to text
 - `mkisofs` or `xorriso` for making iso
 - `dos2unix` for changing control characters to Windows CRLF (important)
 
-**Packaging**
+### Packaging
 
 This instruction is based in Arch Linux btw, in Bash Shell. It'simple because of different Linux distributions or you're using Windows.
 
@@ -75,20 +75,21 @@ This instruction is based in Arch Linux btw, in Bash Shell. It'simple because of
 - xorriso equivalent is `xorriso -as mkisofs -o wrappers.iso ./iso`
 - dos2unix is recommended as texts are encoded in LF while on Windows (until Windows 10 1803) will have problems with text.
 
-**Wine Support**
+### Wine Support
 
 Since kjliew did not provide source code for Wine binaries that work in QEMU-3dfx. You may donate to him for the Binaries or seek alternatives. (his binaries are better than mine anyway)
 
 1. Install [SoftGPU](https://github.com/JHRobotics/softgpu) (Works like a charm)
-2. Compile [Wine9x Libraries](https://github.com/JHRobotics/wine9x) (Works if followed instructions correctly, but runs terrible)
-3. Compile WineD3D Libraries directly on wine. I've tried that, and it does not work, especially later versions of wine. ([kjliew to me](https://www.youtube.com/watch?v=FGtzsy8Uptw))
-4. Try compiling ReactOS Wine (might work. [Reference](https://github.com/adolfintel/wined3d4win/issues/13))
-5. [Donate to him](https://github.com/kjliew/qemu-3dfx?tab=readme-ov-file#donation).
-6. c̶h̶e̶c̶k̶ ̶a̶r̶c̶h̶i̶v̶e̶.̶o̶r̶g̶.
+2. B
+3. Compile [Wine9x Libraries](https://github.com/JHRobotics/wine9x) (Works if followed instructions correctly, but runs terrible)
+4. Compile WineD3D Libraries directly on wine. I've tried that, and it does not work, especially later versions of wine. ([kjliew to me](https://www.youtube.com/watch?v=FGtzsy8Uptw))
+5. Try compiling ReactOS Wine (might work. [Reference](https://github.com/adolfintel/wined3d4win/issues/13))
+6. [Donate to him](https://github.com/kjliew/qemu-3dfx?tab=readme-ov-file#donation).
+7. c̶h̶e̶c̶k̶ ̶a̶r̶c̶h̶i̶v̶e̶.̶o̶r̶g̶.
 
 ## Notes
 
-**NVIDIA Linux Support**
+### NVIDIA Linux Support
 
 Using NVIDIA proprietary drivers on Linux may crash QEMU-3dfx when running a 3D application. There are some workarounds to it.
 
@@ -96,7 +97,7 @@ Using NVIDIA proprietary drivers on Linux may crash QEMU-3dfx when running a 3D 
 - Use [Zink](https://wiki.archlinux.org/title/OpenGL#OpenGL_over_Vulkan_(Zink)) (works both, crashes Glide apps)
 - Use Software Rendering
 
-**Others**
+### Others
 
 - If you got some problems with the wrappers (i.e. wrappers compiled without 3dfx patches). You should download it on actions tab via "Build Stable Branch" and choose the right commit build.
 - ICD support is included via JHRobotics forked repo but disabled by default (im sorry)

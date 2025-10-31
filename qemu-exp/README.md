@@ -1,9 +1,10 @@
 # Experimental patches folder
 
-This folder is where i put the patches that are meant to be unstable yet helpful and may contains features that are locked behind donations or my dumb ideas.
+This folder is where I put the patches that are meant to be unstable yet helpful and may contain features that are locked behind donations or my dumb ideas.
 
+     icd-support.patch                - Adds ICD Support to wrappers (use `-p1` when patching)
+     qemu-windows-vss-mingw-fix.patch - Fixes compilation for MingGW-w64 version 14+
      SDL-Clipboard.patch              - SDL Clipboard support patch for QEMU version 10.0.x
-     qemu-windows-vss-mingw-fix.patch - Fixes compilation for MingGW-w64 version 14+ [#15](https://github.com/kharovtobi/qemu-3dfx-arch/issues/15)
 
 **Please use it with caution!**
 

@@ -48,8 +48,6 @@ static uint32_t *mdata;
 static uint32_t *fbtm;
 static void *mbufo;
 
-const char *rev_ptr = rev_;
-
 static void FiniMesaPTMMBase(PDRVFUNC pDrv)
 {
     pDrv->UnmapLinear((FxU32)mbufo, MBUFO_SIZE);
@@ -16744,16 +16742,10 @@ wglChoosePixelFormatARB (HDC hdc,
 
 /* WGL_ARB_create_context */
 static int level;
-#ifndef ICDDRIVER
 static HGLRC WINAPI COMPACT
 wglCreateContextAttribsARB(HDC hDC,
                            HGLRC hShareContext,
                            const int *attribList)
-#else
-HGLRC WINAPI wglCreateContextAttribsARB(HDC hDC, HGLRC hShareContext, const int *attribList);
-HGLRC WINAPI COMPACT
-private_wglCreateContextAttribsARB(HDC hDC, HGLRC hShareContext, const int *attribList)
-#endif
 {
   uint32_t i, ret;
   WGL_FUNCP("wglCreateContextAttribsARB");
@@ -16925,15 +16917,9 @@ wglSetDeviceGammaRamp3DFX(HDC hdc, LPVOID arrays)
 /* WGL_ARB_make_current_read */
 uint32_t PT_CALL mglCreateContext (uint32_t arg0);
 uint32_t PT_CALL mglMakeCurrent (uint32_t arg0, uint32_t arg1);
-#ifndef ICDDRIVER
 static uint32_t WINAPI wglMakeContextCurrentARB(uint32_t arg0,
                               uint32_t arg1,
                               uint32_t arg2)
-#else
-BOOL WINAPI wglMakeContextCurrentARB(HDC hDrawDC, HDC hReadDC, HGLRC hglrc);
-
-uint32_t WINAPI private_wglMakeContextCurrentARB(uint32_t arg0, uint32_t arg1, uint32_t arg2)
-#endif
 {
     uint32_t currRC, ret = 0;
     if (arg0 == arg1) {
@@ -17081,14 +17067,6 @@ void HookDeviceGammaRamp(const uint32_t caddr)
 #undef GLGAMMA_HOOK
 }
 
-static void WINAPI
-HelperHookTime(const HMODULE mod)
-{
-    SYSTEM_INFO si;
-    GetSystemInfo(&si);
-    HookGetTimeModAddr(&si, 0, (uint32_t)mod);
-}
-
 BOOL WINAPI
 mglDescribeLayerPlane(HDC hdc, int iPixelFormat, int iLayerPlane,
                       UINT nBytes, LPLAYERPLANEDESCRIPTOR ppfd)
@@ -17174,8 +17152,6 @@ mglGetProcAddress (uint32_t arg0)
     FUNC_WGL_EXT(glDebugMessageCallbackARB);
     FUNC_WGL_EXT(glDebugMessageControlARB);
     FUNC_WGL_EXT(glDebugMessageInsertARB);
-    /* Helper */
-    FUNC_WGL_EXT(HelperHookTime);
 #undef FUNC_WGL_EXT
 
     ret = (uint32_t)fptr;
@@ -17227,7 +17203,7 @@ mglMakeCurrent (uint32_t arg0, uint32_t arg1)
         return 0;
     //DPRINTF("MakeCurrent %x %x", arg0, arg1);
     ptVer[0] = arg1;
-    memcpy((char *)&ptVer[1], rev_ptr, 8);
+    memcpy((char *)&ptVer[1], rev_, 8);
     memcpy(((char *)&ptVer[1] + 8), icdBuild, sizeof(icdBuild));
     ptm[0xFF8 >> 2] = MESAGL_MAGIC;
     if (!currGLRC) {
@@ -17518,50 +17494,6 @@ LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
     return CallNextHookEx(hHook, nCode, wParam, lParam);
 }
 
-#ifdef ICDDRIVER
-HINSTANCE DLLModule = NULL;
-#endif
-
-void load_rev()
-{
-	DWORD type;
-	LSTATUS lResult;
-	HKEY hKey;
-	DWORD size;
-	static char rev_revised[255];
-	
-	lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\vmdisp9x", 0, KEY_READ, &hKey);
-	if(lResult == ERROR_SUCCESS)
-	{
-		size = sizeof(rev_revised);
-		lResult = RegQueryValueExA(hKey, "REV_QEMU3DFX", NULL, &type, (LPBYTE)rev_revised, &size);
-	  if(lResult == ERROR_SUCCESS)
-	  {
-	    switch(type)
-	    {
-	      case REG_SZ:
-	      {
-	      	size_t s = strlen(rev_revised);
-	      	
-	      	while(s <= 7)
-	      	{
-	      		rev_revised[s] = '-';
-	      		s++;
-	      	}
-	      	
-	      	rev_revised[7] = '-';
-	      	rev_revised[8] = '\0';
-	      	
-	      	rev_ptr = rev_revised;
-	      	
-	      	break;
-	      }
-	    }
-		}
-		RegCloseKey(hKey);
-	}
-}
-
 BOOL APIENTRY DllMain( HINSTANCE hModule,
         DWORD dwReason,
         LPVOID lpReserved
@@ -17588,7 +17520,6 @@ BOOL APIENTRY DllMain( HINSTANCE hModule,
         case DLL_THREAD_DETACH:
             break;
         case DLL_PROCESS_ATTACH:
-            load_rev();
             if (drv.Init()) {
                 if (InitMesaPTMMBase(&drv)) {
                     drv.Fini();
@@ -17599,18 +17530,6 @@ BOOL APIENTRY DllMain( HINSTANCE hModule,
                 drv.Fini();
                 mdata[1] = 1;
                 refcnt = (char *)&mdata[1];
-
-#ifdef ICDDRIVER
-                {
-                    DLLModule = hModule;
-                    /* load self again to protect from unload */
-                    char sz[MAX_PATH];
-                    if(GetModuleFileName(hModule, sz, MAX_PATH))
-                    {
-                        LoadLibrary(sz);
-                    }
-                }
-#endif
             }
             else {
                 refcnt = &cbref;
@@ -17627,7 +17546,7 @@ BOOL APIENTRY DllMain( HINSTANCE hModule,
             GetModuleFileName(NULL, procName, sizeof(procName) - 1);
             DPRINTF("MesaGL Init ( %s )", procName);
 	    DPRINTF("ptm 0x%08x fbtm 0x%08x", (uint32_t)ptm, (uint32_t)fbtm);
-            memcpy(&fbtm[(MGLFBT_SIZE - ALIGNBO(1)) >> 2], rev_ptr, ALIGNED(1));
+            memcpy(&fbtm[(MGLFBT_SIZE - ALIGNBO(1)) >> 2], rev_, ALIGNED(1));
 	    ptm[(0xFBCU >> 2)] = (0xA0UL << 12) | MESAVER;
 	    HostRet = ptm[(0xFBCU >> 2)];
 	    if (HostRet != ((MESAVER << 8) | 0xa0UL)) {

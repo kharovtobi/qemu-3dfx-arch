@@ -41,6 +41,8 @@ qemu-6*
 # Wrappers & ISO folders
 wrappers/*/*/*.exe
 wrappers/*/*/*.res
+wrappers/*/src*
+wrappers/mesa/registry/
 wrappers/iso/commit\ id.txt
 wrappers/iso/commit.txt
 wrappers/iso/readme.txt
@@ -64,4 +66,3 @@ wrappers.iso
 # Stuff not yet ready
 gamepad.patch
 qemu-2
-wrappers/wine/

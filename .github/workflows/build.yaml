@@ -396,6 +396,8 @@ jobs:
     - name: Compile wrappers
       shell: msys2 {0}
       run: |
+        echo "Add ICD support"
+        patch -p1 -i ./qemu-exp/icd.patch
         echo "Adding Environment Variables"
         export WATCOM=$(pwd)/watcom
         export PATH=$WATCOM/binnt:$PATH:$WATCOM/binw:$PATH
@@ -432,9 +434,9 @@ jobs:
        bash ../../scripts/sign_binary
        cp ../texts/readme.txt readme.txt
        cp ../../LICENSE license.txt
-       cp -rf ../texts/{readme.txt,icd-enable.reg} wrapgl/icd
+       cp -rf ../texts/{readme.txt,*.reg} wrapgl/icd
        mv wrapgl/qmfxgl32.dll wrapgl/icd/qmfxgl32.dll
-       unix2dos commit.txt license.txt readme.txt autorun.inf open.bat wrapgl/icd/{readme.txt,icd-enable.reg}
+       unix2dos commit.txt license.txt readme.txt autorun.inf open.bat wrapgl/icd/{readme.txt,*.reg}
        cd ..
        xorriso -as mkisofs -JR -V "VMWRAPPER-$(git log --format="%h" -n 1)" -o wrappers.iso iso
        echo "Finished build at $(date)"

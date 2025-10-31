@@ -6,13 +6,12 @@ CC=$(CROSS)gcc$(VER)
 RC=windres
 DLLTOOL=dlltool
 STRIP=strip
-CFLAGS=-march=x86-64-v2 -mtune=generic -mfpmath=sse -msse2 -O3 -mcrc32
+CFLAGS=-march=x86-64-v2 -mtune=generic -mfpmath=sse -O3
 CFLAGS+=-pipe -I$(QEMU_SRC_DIR)/hw/mesa -I$(FXLIB) -Wall -Werror -flto=auto -fomit-frame-pointer
 LDFLAGS=-static-libgcc
 LDFLAGS+=-Wl,--disable-auto-image-base,--no-seh,--dynamicbase,--nxcompat
 SRCDIR=../src
 TARGET=opengl32.dll
-TARGETICD=qmfxgl32.dll
 TOOLSTS=wgltest.exe
 TOOLSIN=wglinfo.exe
 TOOLSGL=wglgears.exe
@@ -28,12 +27,9 @@ C_OBJS:=\
     fxtime.o \
     md5.o \
 
-ifdef SOFTGPU
-CFLAGS := $(filter-out -flto=auto -march=x86-64-v2 -mtune=generic  -Werror,$(CFLAGS)) -march=pentium2 -mtune=core2
-endif
 
-all: fxlib $(TARGET) exports-check $(TOOLSTS) 
-all+: fxlib $(TARGET) $(TARGETICD) exports-check $(TOOLSTS) $(TOOLSIN) $(TOOLSGL) $(TOOLSPB)
+all: fxlib $(TARGET) exports-check $(TOOLSTS)
+all+: fxlib $(TARGET) exports-check $(TOOLSTS) $(TOOLSIN) $(TOOLSGL) $(TOOLSPB)
 
 exports-check: $(TARGET)
 	@if [ $$(objdump -x $(TARGET) | grep "\[[\ 0-9]*\]" | grep -v "^\[" | \
@@ -47,18 +43,6 @@ $(TARGET): $(C_OBJS) szdata.o wrapgl32.o stamp.o
 	@$(GENDEF) - $@ | sed "s/\(@[0-9]*\)@.*/\1/;s/\(^.*\)\(@[0-9]*\)/\1\ =\ \1\2/;s/^mgl/wgl/;s/wgd//" | \
 		sed "s/\ ;\ Check!!!.*//;/lto_priv/d;/CallWndProc/d" | \
 		grep -e ^LIB -e ^EXP -e " = " > $(@:.dll=.def)
-	@echo "  LD  $@"
-	@$(CC) -shared $(CFLAGS) -o $@ $(@:dll=def) $+ $(LDFLAGS)
-
-wrapgl32_gears.o: wrapgl32.o
-
-$(TARGETICD): $(C_OBJS) szdata.o wrapgl32_icd.o icddrv.o stamp.o
-	@echo "  CFLAGS  $(CFLAGS)"
-	@echo "  LDFLAGS $(LDFLAGS)"
-	@$(CC) -shared $(CFLAGS) -o $@ $+ $(LDFLAGS)
-	@$(GENDEF) - $@ | sed "s/\(@[0-9]*\)@.*/\1/;s/\(^.*\)\(@[0-9]*\)/\1\ =\ \1\2/;/CallWndProc/d;s/^mgl/wgl/;s/wgd//;s/^mgd/Drv/;/^private/d" | \
-		sed "s/\ ;\ Check!!!.*//;/lto_priv/d;/CallWndProc/d" | \
-		grep -e ^LIB -e ^EXP -e "\ =\ " > $(@:.dll=.def)
 	@echo "  LD  $@"
 	@$(CC) -shared $(CFLAGS) -o $@ $(@:dll=def) $+ $(LDFLAGS)
 
@@ -78,21 +62,10 @@ $(TOOLSIN):
 	@echo "  LD  $@"
 	@$(CC) $(CFLAGS) -s -o $@ $(SRCDIR)/wglinfo.c $(LDFLAGS) -lgdi32 -lopengl32
 
-
-ifndef SOFTGPU
 stamp.o:
 	@git rev-parse --short HEAD | sed "s/\(.*\)/const\ char\ rev_\[\]\ =\ \"\1\-\";/" > /tmp/$(@:o=c)
 	@echo -n "  REV $@"; cat /tmp/$(@:o=c) | sed "s/.*rev_\[\]\ =//;s/;//"
 	@$(CC) -c -o $@ /tmp/$(@:o=c)
-
-else
-stamp.o:
-	@echo $(SOFTGPU) | sed "s/\(.......\).*/const\ char\ rev_\[\]\ =\ \"\1\-\";/" > /tmp/$(@:o=c)
-	@echo -n "  REV $@"; cat /tmp/$(@:o=c) | sed "s/.*rev_\[\]\ =//;s/;//"
-	@$(CC) -c -o $@ /tmp/$(@:o=c)
-
-endif
-
 
 fxlib:
 	@if [ "$$MSYSTEM" != "MINGW32" ]; then echo "Error: MSYSTEM == $$MSYSTEM"; exit 1; fi
@@ -106,7 +79,7 @@ fxlib:
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	@rm -f *.o *.def *.res
+	@rm -f *.o *.def
 	@if [ -f $(TARGET) ]; then \
 	    $(STRIP) --strip-unneeded $(TARGET); \
 	    sh -c 'ls -l $(TARGET)'; \
@@ -115,3 +88,4 @@ clean:
 distclean: clean
 	@rm -f $(TARGET) $(TARGETICD) $(TOOLSIN) $(TOOLSGL) $(TOOLSTS) $(TOOLSPB)
 	@make -C ../wgltest $@ OUTDIR=$(OUTDIR)
+
