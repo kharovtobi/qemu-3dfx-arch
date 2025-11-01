@@ -1,7 +1,0 @@
-REGEDIT4
-; When you have working QEMU-3dfx
-; This key enable ICD OpenGL driver
-; (dont forget to copy qmfxgl32.dll to
-; WINDOWS/SYSTEM folder)
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\OpenGLdrivers]
-"QEMUFX"="qmfxgl32.dll"

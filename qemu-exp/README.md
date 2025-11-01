@@ -3,7 +3,7 @@
 This folder is where i put the patches that are meant to be unstable yet helpful and may contains features that are locked behind donations or my dumb ideas.
 
      SDL-Clipboard.patch              - SDL Clipboard support patch for QEMU version 10.0.x
-     qemu-windows-vss-mingw-fix.patch - Fixes compilation for MingGW-w64 version 14+ [#15](https://github.com/kharovtobi/qemu-3dfx-arch/issues/15)
+     qemu-windows-vss-mingw-fix.patch - Fixes compilation for MingGW-w64 version 14+ 
 
 **Please use it with caution!**
 
@@ -39,5 +39,6 @@ The content is inside this folder or already released in this repository.
 - Compiling wine support for QEMU-3dfx
 - `buildiso.sh` Shell Script
 
-# Note
+## Note
+
 Im not responsible if something happens to your computer from having program errors to bricking your system.

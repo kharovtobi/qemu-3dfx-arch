@@ -4,7 +4,7 @@
 # Contributor: Jens Staal <staal1978@gmail.com>
 # Contributor: ackalker
 pkgname=openwatcom-v2
-_build=2024_05_02
+_build=2025_03_01
 pkgver=2.0_$_build
 pkgrel=2
 pkgdesc="The Open Watcom Fortran/C/C++ compiler, binary distribution -V2 fork"
@@ -13,12 +13,12 @@ arch=('x86_64')
 url="https://github.com/open-watcom"
 license=('custom:OWPL-1')
 source=(
-"ow-snapshot_$_build.tar.xz"::"https://github.com/open-watcom/open-watcom-v2/releases/download/${_build//_/-}-Build/ow-snapshot.tar.xz"
+"ow-snapshot_${_build}.tar.xz::https://github.com/open-watcom/open-watcom-v2/releases/download/${_build//_/-}-Build/ow-snapshot.tar.xz"
 'owsetenv.sh'
 )
-noextract=("ow-snapshot_$_build.tar.xz")
-md5sums=('09fa7148f814d4c3e2559b8a43685a14'
-         'SKIP')
+noextract=("ow-snapshot_${_build}.tar.xz")
+md5sums=('5b3973fab63a6b9681efa4ca80d4bfee'
+         '31650b748e12c7bfe4ca01f179c9bf5e')
 options=(!strip)
 
 build() {
@@ -31,14 +31,12 @@ package() {
 	rm -rf "${pkgdir}/opt/watcom/binl"
 	rm -rf "${pkgdir}/opt/watcom/binp"
 	rm -rf "${pkgdir}/opt/watcom/binl64"
+	rm -rf "${pkgdir}/opt/watcom/lh"
 	install -d "${pkgdir}/usr/share/licenses/watcom"
 	install -Dm644 "$pkgdir/opt/watcom/license.txt" "$pkgdir/usr/share/licenses/watcom/license.txt"
 
-	cp "${srcdir}/owsetenv.sh" ${pkgdir}/opt/watcom/
+	cp "${srcdir}/owsetenv.sh" "${pkgdir}/opt/watcom/"
 
-	msg "correct permissions for header directories"
-	chmod -R 755 $pkgdir/opt/watcom/{h,lh}
-	
 	msg "adding some fake binaries to make life easier"
 	cd $pkgdir/opt/watcom/binnt
 	ln -s /usr/bin/true ranlib

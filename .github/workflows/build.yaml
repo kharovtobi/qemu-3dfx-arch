@@ -432,9 +432,10 @@ jobs:
        bash ../../scripts/sign_binary
        cp ../texts/readme.txt readme.txt
        cp ../../LICENSE license.txt
-       cp -rf ../texts/{readme.txt,icd-enable.reg} wrapgl/icd
+       cp -rf ../texts/readme_icd.txt ../mesa/registry/*.reg wrapgl/icd
+       mv wrapgl/icd/readme_icd.txt wrapgl/icd/readme.txt
        mv wrapgl/qmfxgl32.dll wrapgl/icd/qmfxgl32.dll
-       unix2dos commit.txt license.txt readme.txt autorun.inf open.bat wrapgl/icd/{readme.txt,icd-enable.reg}
+       unix2dos commit.txt license.txt readme.txt autorun.inf open.bat wrapgl/icd/{readme.txt,*.reg}
        cd ..
        xorriso -as mkisofs -JR -V "VMWRAPPER-$(git log --format="%h" -n 1)" -o wrappers.iso iso
        echo "Finished build at $(date)"

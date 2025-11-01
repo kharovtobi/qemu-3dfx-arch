@@ -1,0 +1,10 @@
+REGEDIT4
+
+
+[HKEY_LOCAL_MACHINE\Software\vmdisp9x\driver]
+;
+; When you have working QEMU-3dfx this key enable
+; ICD OpenGL driver
+; (dont forget copy qmfxgl32.dll and fxmemmap.vxd to
+; WINDOWS/SYSTEM folder)
+"FORCE_QEMU3DFX"=dword:00000001

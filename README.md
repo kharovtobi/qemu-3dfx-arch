@@ -93,7 +93,6 @@ Simple guide to apply the patch:
 - This guide makes and installs binaries to install_dir
 - You can also patch any versions in 10.1.x
 - All patch hunks must be successful in order for the binary to run properly, or you may have BSOD when running Windows 98 for the first time and not work as intended.
-- These steps may be subject to change as there may be errors when compiling. Refer to [cflag.txt](cflag.txt) and add it to configure.
 
 ### VirGL with SDL2 OpenGL Support
 

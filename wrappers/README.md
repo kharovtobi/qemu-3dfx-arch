@@ -9,6 +9,7 @@ This folder contains the source codes for wrappers that make pass-through possib
     fxlib         - System Driver wrapper for supported guest OS/environment (Windows)
     iso           - Wrapper Disk folder
     mesa          - MESA GL wrapper for supported guest OS/environment (Windows)
+    mesa/registry - Registries used for vmdisp9x/softgpu
     texts         - Some texts and readme
     
 ## Building Guest Wrappers

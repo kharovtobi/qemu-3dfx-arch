@@ -1,0 +1,12 @@
+REGEDIT4
+[HKEY_LOCAL_MACHINE\Software\vmdisp9x\driver]
+; override signature in QEMU-3dfx driver
+; you can obtain current signature by command:
+; git rev-parse HEAD
+; (only first 7 characters needed)
+; you need same signature as QEMU-3dfx which you used to
+; build QEMU
+; hash from 10.1.2-1 release
+"REV_QEMU3DFX"="23e4899"
+; fork hash:
+;"REV_QEMU3DFX"="7708f31"
